@@ -50,14 +50,16 @@
                     <button class="btn btn-primary">Send To Us</button>
                   </div>
                 </div>
-              </div>
+            </div>
         <br>
     </div>
 </div>
 <br>
-<div style="background-color:black;text-align: center;color: white;">
+</div>
+<br>
+<div style="background-color:black;background-size:100%;;text-align: center;color:white;">
     <br>
-    <img src="{{url('Logo/cSimbol.png')}}" style="width: 1%;height: 1%;" alt=""> Cassy Copyright 2020
     <br>
-    <br>
-  </div>
+    <img src="{{url('Logo/cSimbol.png')}}" style="width: 1%;height: 1%;"> Cassy Store Copyright 2020
+    <br><br>
+</div>
