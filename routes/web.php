@@ -18,5 +18,7 @@ Route::get('/', function () {
 });
 
 Route::view('/aboutUsPage', 'AboutUs');
-Route::view('/Log_InPage', 'Login');
-Route::view('/RegisterPage', 'Register');
+Route::view('/login', 'Login');
+Route::view('/register', 'Register');
+
+Route::post("/regCheck","MainController@regCheck");
