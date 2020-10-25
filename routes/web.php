@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,5 +21,12 @@ Route::get('/', function () {
 Route::view('/aboutUsPage', 'AboutUs');
 Route::view('/login', 'Login');
 Route::view('/register', 'Register');
+Route::get("/logout",function(){
+    if(Session::has("userLog")){
+        Session::forget("userLog");
+    }
+    return redirect("/login");
+});
 
 Route::post("/regCheck","MainController@regCheck");
+Route::post("/logCheck","MainController@logCheck");

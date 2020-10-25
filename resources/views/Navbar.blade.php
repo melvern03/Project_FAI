@@ -14,7 +14,7 @@
         <li class="nav-item">
           <a class="nav-link" href="#">Pricing</a>
         </li>
-        @if (Session::has("userLog"))
+        {{-- @if (Auth::check())
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{Session::get("userLog")}}
@@ -23,6 +23,26 @@
               <a class="dropdown-item" href="#">Profile</a>
             </div>
           </li>
+        @else
+        <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+        @endif --}}
+
+        @if (Session::has("userLog"))
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{Session::get("userLog")}}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="#">Profile</a>
+              <a class="dropdown-item" href="/logout">Log Out</a>
+            </div>
+        </li>
+            </li>
         @else
         <li class="nav-item">
             <a class="nav-link" href="/login">Login</a>

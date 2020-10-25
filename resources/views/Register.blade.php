@@ -18,6 +18,9 @@ Register
         </button>
     </div>
     @endif
+    {{-- @if (Session("error"))
+        <h3>User tidak ditemukan</h3>
+    @endif --}}
     <div style="text-align: center;">
         <main role="main" class="container">
             <div class="jumbotron" style="opacity: 77%;margin-top:5%">
@@ -51,7 +54,13 @@ Register
                             <label for="inputConpas">Confirm Password</label>
                             <input type="password" name="ConPass" class="form-control" id="inputConpas">
                         </div>
-
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label><br>
+                        <input type="radio" id="male" name="gender" value="L">
+                        <label for="male">Laki Laki</label><br>
+                        <input type="radio" id="female" name="gender" value="F">
+                        <label for="female">Perempuan</label><br>
                     </div>
                     <div class="form-group">
                         <label for="inputAddress">Address</label>
