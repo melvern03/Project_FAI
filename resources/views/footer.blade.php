@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" style="margin:0px 10px">
     <div class="col-4">
         <div class="col-3">
             <img src="{{url('Logo/Logo(no title).png')}}" style="width: 100%">
@@ -12,7 +12,7 @@
                 <img src="{{url('Logo/fb_logo.png')}}" style="width: 250%">
             </div>
             <div class="col-1">
-                <img src="{{url('Logo/Logo(no title).png')}}" style="width: 250%">
+                <img src="{{url('Logo/gmail_logo.png')}}" style="width: 250%">
             </div>
         </div>
     </div>

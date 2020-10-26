@@ -50,7 +50,7 @@
     <h1 class="display-4" style="color:grey">New Arrival</h1>
     <hr>
     <br><br><br>
-        <div style=" display: flex;flex-wrap: nowrap;flex-direction: row;justify-content: space-evenly;">
+        <div style=" display: flex;flex-wrap: nowrap;flex-direction: row;justify-content: space-evenly;margin:0px">
         <div class="card" style="width: 30rem;">
             <img src="{{asset('Product/Baju1.jpg')}}" class="card-img-top" alt="...">
             <div class="card-body">
@@ -84,7 +84,7 @@
         </div>
     <br><br><br>
     {{-- ================================================================================================================================= --}}
-    <div class="row">
+    <div class="row" style="margin:0px">
         <div class="col-6" style="background-image: url('Promo/Layout1.jpg');background-size:100%;text-align: center;">
             <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
             <br><br><br><br><br><br><br><br>
