@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-light sticky-top bg-light" style="opacity: 100%;">
+<nav class="navbar navbar-expand-md navbar-light sticky-top bg-light" style="opacity: 100%;padding:0px">
     <a class="nav-link" href="/"><img src="{{url('Logo/Logo(no title).png')}}"  style="width: 8%;height:8%;"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>

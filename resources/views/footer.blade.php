@@ -1,5 +1,3 @@
-<hr>
-<br>
 <div class="row">
     <div class="col-4">
         <div class="col-3">
@@ -7,7 +5,6 @@
         </div>
         <br>
         <div class="row">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div class="col-1">
                 <img src="{{url('Logo/ig_logo.png')}}" style="width: 250%">
             </div>
@@ -57,8 +54,7 @@
 <br>
 </div>
 <br>
-<div style="background-color:black;background-size:100%;;text-align: center;color:white;">
-    <br>
+<div style="background-color:black;text-align: center;color:white;">
     <br>
     <img src="{{url('Logo/cSimbol.png')}}" style="width: 1%;height: 1%;"> Cassy Store Copyright 2020
     <br><br>

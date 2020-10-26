@@ -6,8 +6,6 @@
 
 @section('Content')
 <div style="background-color:white;background-size:100%;;text-align: center;">
-    <br>
-    <br>
     @include('Navbar')
         <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
