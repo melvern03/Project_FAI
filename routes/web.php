@@ -21,6 +21,8 @@ Route::get('/', function () {
 Route::view('/aboutUsPage', 'AboutUs');
 Route::view('/login', 'Login');
 Route::view('/register', 'Register');
+Route::view('/shop', 'shop');
+Route::view('/detail', 'detail');
 Route::get("/logout",function(){
     if(Session::has("userLog")){
         Session::forget("userLog");
