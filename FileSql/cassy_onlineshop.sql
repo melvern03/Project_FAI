@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 26, 2020 at 04:09 AM
+-- Generation Time: Oct 31, 2020 at 06:11 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.8
 
@@ -26,6 +26,24 @@ USE `cassy_onlineshop`;
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admins`
+--
+
+DROP TABLE IF EXISTS `admins`;
+CREATE TABLE `admins` (
+  `id_admin` int(11) NOT NULL,
+  `nama_admin` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `email` text NOT NULL,
+  `no_hp` text NOT NULL,
+  `level` int(11) NOT NULL,
+  `last_login` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `d_baju`
 --
 
@@ -34,7 +52,6 @@ CREATE TABLE `d_baju` (
   `ID_HBAJU` varchar(10) NOT NULL,
   `NAMA_BAJU` varchar(50) NOT NULL,
   `WARNA` text NOT NULL,
-  `HARGA_BAJU` int(11) NOT NULL,
   `UKURAN` int(11) NOT NULL,
   `STOK` int(11) NOT NULL,
   `ID_KATEGORI` varchar(10) NOT NULL
@@ -64,7 +81,10 @@ CREATE TABLE `d_jual` (
 DROP TABLE IF EXISTS `h_baju`;
 CREATE TABLE `h_baju` (
   `ID_HBAJU` varchar(10) NOT NULL,
-  `NAMA_BAJU` varchar(100) NOT NULL
+  `NAMA_BAJU` varchar(100) NOT NULL,
+  `harga` int(11) NOT NULL,
+  `gambar` text NOT NULL,
+  `time_added` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -89,9 +109,19 @@ CREATE TABLE `h_jual` (
 
 DROP TABLE IF EXISTS `kategori`;
 CREATE TABLE `kategori` (
-  `ID_KATEGORI` varchar(10) NOT NULL,
+  `ID_KATEGORI` int(11) NOT NULL,
   `NAMA_KATEGORI` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `kategori`
+--
+
+INSERT INTO `kategori` (`ID_KATEGORI`, `NAMA_KATEGORI`) VALUES
+(1, 'Man T-Shirt'),
+(2, 'Woman T-Shirt'),
+(3, 'Man Jacket & Sweater'),
+(4, 'Woman Jacket & Sweater');
 
 -- --------------------------------------------------------
 
@@ -185,6 +215,12 @@ INSERT INTO `user` (`id_user`, `nama_user`, `username`, `email`, `password`, `al
 --
 
 --
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id_admin`);
+
+--
 -- Indexes for table `d_baju`
 --
 ALTER TABLE `d_baju`
@@ -219,6 +255,22 @@ ALTER TABLE `kategori`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id_user`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `kategori`
+--
+ALTER TABLE `kategori`
+  MODIFY `ID_KATEGORI` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

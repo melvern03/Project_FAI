@@ -20,21 +20,21 @@
               <div class="carousel-item active">
                 <img src="{{url('Promo/Promo1.jpg')}}" class="d-block w-100 " focusable="false" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                    <button class="btn btn-light">Shop Now</button>
+                    <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
                     <br>
                 </div>
               </div>
               <div class="carousel-item">
                 <img src="{{url('Promo/Promo2.jpg')}}" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                    <button class="btn btn-light">Shop Now</button>
+                    <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
                     <br>
                 </div>
               </div>
               <div class="carousel-item">
                 <img src="{{url('Promo/Promo3.jpg')}}" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                    <button class="btn btn-light">Shop Now</button>
+                    <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
                     <br>
                 </div>
               </div>
@@ -55,41 +55,32 @@
         <hr>
         <section class="text-center">
             <div style=" display: flex;flex-wrap: nowrap;flex-direction: row;justify-content: space-evenly;">
-                <div class="card" style="width: 30rem;">
-                    <img src="{{asset('Product/Baju1.jpg')}}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Black Tees</h5>
-                        <hr><br>
-                        <div class="row">
-                            <div class="col-6">
-                                Rp. 25.000
-                            </div>
-                            <div class="col-6">
-                                <a href="#" class="btn btn-primary">Shop Now</a>
+                @php
+                    $countNew = 1
+                @endphp
+                @foreach ($newArrival as $item)
+                    @if ($countNew <= 3)
+                    <div class="card" style="width: 30rem;">
+                        <img src="{{asset($item->gambar)}}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{$item->nama}}</h5>
+                            <hr><br>
+                            <div class="row">
+                                <div class="col-6">
+                                    {{"Rp " . number_format($item->harga,2,',','.')}}
+                                </div>
+                                <div class="col-6">
+                                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    </div>
-                    <div class="card" style="width: 30rem;">
-                    <img src="{{asset('Product/Baju2.jpg')}}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Upload Your Image - Edition</h5>
-                        <hr><br>
-                        Rp. 45.000 <br>
-                        <a href="#" class="btn btn-primary">Shop Now</a>
-                    </div>
-                    </div>
-                    <div class="card" style="width: 30rem;">
-                    <img src="{{asset('Product/Baju3.jpg')}}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Red World - Edition</h5>
-                        <hr><br>
-                        Rp. 145.000<br>
-                        <a href="#" class="btn btn-primary">Shop Now</a>
-                    </div>
-                    </div>
-                </div>
-
+                    @php
+                        $countNew++
+                    @endphp
+                    @endif
+                @endforeach
+            </div>
         </section>
         </div>
     </div>

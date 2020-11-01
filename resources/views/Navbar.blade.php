@@ -8,8 +8,22 @@
         <li class="nav-item">
           <a class="nav-link" href="/">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                @php
+                    $kategori = DB::table('kategori')->get();
+                @endphp
+                @foreach ($kategori as $item)
+                <form method="POST" action="/shop/{{$item->NAMA_KATEGORI}}">
+                    @csrf
+                    <button class="dropdown-item" type="submit" name='btnKategori' value={{$item->ID_KATEGORI}}>{{$item->NAMA_KATEGORI}}</a>
+                </form>
+                @endforeach
+
+            </div>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Pricing</a>

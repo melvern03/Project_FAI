@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\userController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -14,14 +15,13 @@ use Illuminate\Support\Facades\Session;
 |
 */
 
-Route::get('/', function () {
-    return view('Home');
-});
+Route::get('/', 'userController@home' );
 
 Route::view('/aboutUsPage', 'AboutUs');
 Route::view('/login', 'Login');
+Route::view('/cart', 'Cart');
 Route::view('/register', 'Register');
-Route::view('/shop', 'shop');
+Route::get('/shop', 'userController@shop')->name('shop');
 Route::view('/detail', 'detail');
 Route::get("/logout",function(){
     if(Session::has("userLog")){
@@ -30,5 +30,8 @@ Route::get("/logout",function(){
     return redirect("/login");
 });
 
+Route::post("/shop/sortBy","userController@shopSort");
+Route::post("/shop/{kategori}","userController@shopCategory");
+Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
 Route::post("/regCheck","MainController@regCheck");
 Route::post("/logCheck","MainController@logCheck");
