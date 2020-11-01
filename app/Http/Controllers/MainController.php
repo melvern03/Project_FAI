@@ -3,43 +3,90 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Cookie;
 use App\Model\Users;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
+
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class MainController extends Controller
 {
-    function logCheck(Request $req){
+    function logout(){
+        Auth::logout();
+        return redirect("/login");
+    }
 
+    function logCheck(Request $req){
         $validateData = $req->validate(
             [
-                "Password"=>"required",
-                "Username"=>"required"
+                "password"=>"required",
+                "username"=>"required"
             ],
             [
                 "required"=>":Attribute tidak boleh kosong"
             ]
         );
-        $data = Users::all();
-        foreach ($data as $key => $value) {
-            if($value->username==$validateData["Username"]){
-                Session::put("userLog",$value->nama_user);
-                return redirect("/");
+
+        if (Auth::attempt($req->only(["username", "password"]))) {
+            if(Auth::user()->status == "Aktif"){
+                if(Auth::user()->jabatan == "Member"){
+                    Users::where('username',Auth::user()->username)->update(['Last_Login'=>Carbon::now()]);
+                    return \redirect("/")->with("success", "Selamat Datang!");
+
+                }
+            }else if(Auth::user()->status == "Verifikasi"){
+
+
             }
+        } else {
+            return \redirect()->back()->with("error", "User tidak ditemukan!");
         }
-        return redirect("/register")->with("error","User tidak ditemukan");
-
-        // if (Auth::attempt($req->only(["Email", "Password"]))) {
-        //     return \redirect("/")->with("success", "Selamat Datang!");
-        // } else {
-        //     return \redirect()->back()->with("error", "User tidak ditemukan!");
-        // }
     }
 
-    public function username(){
-        return 'Username';
+    function generateCode($panjang) {
+        $result     = "";
+        $dictionary = array_merge(range(1,9), range("a", "z"));
+
+        for ($i = 0; $i < $panjang; $i++) {
+            $result .= $dictionary[mt_rand(0, count($dictionary) - 1)];
+        }
+
+        return $result;
     }
+
+    function sendEmail($to, $subject, $body) {
+        $mail = new PHPMailer(true);
+        $url = 'Logo/Logo(no title).png';
+        try {
+            $mail->isSMTP();                                            // Send using SMTP
+            $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through smtp.gmail.com:587 => port
+            $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+            $mail->Username   = 'cassy.onlineshopistts@gmail.com';                     // SMTP username
+            $mail->Password   = 'onlineshop123';                               // SMTP password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+            $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+            // Recipients
+            $mail->setFrom('cassy.onlineshopistts@gmail.com', 'Cassy');
+            $mail->addAddress($to, 'User');     // Add a recipient
+
+            // Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->AddEmbeddedImage($url,'logo');
+            $mail->Subject = $subject;
+            $mail->Body    = "<img src='cid:logo' style='width:150px;height:150px'><br>Hi Sahabat Cassy. Silahkan Melakukan Konfrimasi untuk mengaktifkan kaun member yang sudah anda registrasi dengan cara memasukan <br>Kode : <b>$body</b><br>Atau klik link dibawah ini<br><a href='http://localhost/proyek_aplin/konfirmasi.php?kode=$body'>Konfirmasi disini!</a>";
+            $mail->AltBody = "<img src='cid:logo' style='width:150px;height:150px'><br>Hi Sahabat Cassy. Silahkan Melakukan Konfrimasi untuk mengaktifkan kaun member yang sudah anda registrasi dengan cara memasukan <br>Kode : <b>$body</b><br>Atau klik link dibawah ini<br><a href='http://localhost/proyek_aplin/konfirmasi.php?kode=$body'>Konfirmasi disini!</a>";
+
+            $mail->send();
+            return "sent";
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+    }
+
 
     function regCheck(Request $req){
         $pas = $req->Password;
@@ -93,6 +140,7 @@ class MainController extends Controller
         $newUsers->status="Aktif";
         $newUsers->jabatan="Member";
         $newUsers->save();
+        //$this->sendEmail($validateData['Email'],"Verifikasi",'');
         return redirect("/register");
     }
 }

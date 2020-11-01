@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\userController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,23 +14,37 @@ use Illuminate\Support\Facades\Session;
 |
 */
 
-Route::get('/', 'userController@home' );
-
-Route::view('/aboutUsPage', 'AboutUs');
-Route::view('/login', 'Login');
-Route::view('/cart', 'Cart');
-Route::view('/register', 'Register');
-Route::get('/shop', 'userController@shop')->name('shop');
-Route::view('/detail', 'detail');
-Route::get("/logout",function(){
-    if(Session::has("userLog")){
-        Session::forget("userLog");
+Route::prefix("/")->group(function(){
+    if(Auth::check()){
+        if(Auth::user()->jabatan != "Member"){
+            Auth::logout();
+        }
     }
-    return redirect("/login");
+    Route::view('/aboutUsPage', 'AboutUs');
+    Route::view('/login', 'Login');
+    Route::view('/register', 'Register');
+    Route::view('/shop', 'shop');
+    Route::view('/detail', 'detail');
+    Route::get('/',function(){
+        if(Auth::check()){
+            if(Auth::user()->jabatan != "Member"){
+                Auth::logout();
+            }
+        }
+        return view("Home");
+    });
 });
 
-Route::post("/shop/sortBy","userController@shopSort");
-Route::post("/shop/{kategori}","userController@shopCategory");
-Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
+
+Route::prefix("admin")->group(function() {
+
+    Route::view("/", "admin.loginAdmin");
+
+    Route::view("/home","admin.main");
+    Route::post("/addBaju","AdminController@addBaju");
+});
+
 Route::post("/regCheck","MainController@regCheck");
 Route::post("/logCheck","MainController@logCheck");
+Route::post("/logAdmin","AdminController@adminLog");
+Route::get("/logAuth","MainController@logout");

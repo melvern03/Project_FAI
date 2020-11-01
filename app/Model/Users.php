@@ -11,6 +11,6 @@ class Users extends User
     protected $primaryKey = "id_user";
     protected $keyType="string";
     protected $incremental = false;
-    public $timestamps = false;
 
+    public $timestamps = false;
 }
