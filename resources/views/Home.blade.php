@@ -58,16 +58,17 @@
                 @php
                     $countNew = 1
                 @endphp
+                @if (count($newArrival) > 0)
                 @foreach ($newArrival as $item)
                     @if ($countNew <= 3)
                     <div class="card" style="width: 30rem;">
-                        <img src="{{asset($item->gambar)}}" class="card-img-top" alt="...">
+                    <img src="{{url('baju/'.$item->gambar)}}" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">{{$item->nama}}</h5>
                             <hr><br>
                             <div class="row">
                                 <div class="col-6">
-                                    {{"Rp " . number_format($item->harga,2,',','.')}}
+                                    {{"Rp " . number_format($item->harga,0,',','.')}}
                                 </div>
                                 <div class="col-6">
                                     <a href="#" class="btn btn-primary">Add to Cart</a>
@@ -80,6 +81,8 @@
                     @endphp
                     @endif
                 @endforeach
+                @endif
+
             </div>
         </section>
         </div>
