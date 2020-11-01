@@ -6,10 +6,22 @@
 
 @section('Content')
 <div style="background-color:white;background-size:100%;;text-align: center;">
-    <br>
-    <br>
     @include('Navbar')
+
     <section>
+        {{-- Start Toast --}}
+    <div class="toast" id="myToast" style="top: 0;right:0;margin:10px">
+        <div class="toast-header">
+            <strong class="mr-auto"><i class="fa fa-grav"></i>Sucess Login</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body" id='welcomeBody'>
+            <div>Berhasil Login Welcome</div>
+        </div>
+    </div>
+    {{-- End Toast --}}
         <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" style="margin-bottom: 100px;">
             <ol class="carousel-indicators">
               <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
@@ -100,5 +112,17 @@
     {{-- ================================================================================================================================= --}}
     <br><br><br><br><br>
     @include('footer')
+    <script>
+        function notif(){
+        $("#myToast").toast({ delay: 2000 });
+        $("#myToast").toast('show');
+    }
+    </script>
 </div>
+@if (Session("success"))
+<script type='text/javascript'>
+    document.getElementById("welcomeBody").innerHTML = "Welcome {{Session('success')}}"
+    notif()
+</script>
+@endif
 @endsection

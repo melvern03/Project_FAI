@@ -28,16 +28,19 @@ Route::prefix("/")->group(function(){
 
 
 
+
 Route::prefix("admin")->group(function() {
 
     Route::view("/", "admin.loginAdmin");
 
     Route::view("/home","admin.main");
     Route::post("/addBaju","AdminController@addBaju");
+    Route::view("/regAdmin","admin.adminReg");
 });
 
 
 Route::post("/regCheck","MainController@regCheck");
+Route::post("/regAdmin","AdminController@adminReg");
 Route::post("/logCheck","MainController@logCheck");
 Route::post("/logAdmin","AdminController@adminLog");
 Route::get("/logAuth","MainController@logout");

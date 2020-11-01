@@ -166,6 +166,4 @@
 
   </script> --}}
 
-  {{-- Show image
-  <img src='/baju/{{$item->gambar}}'> --}}
 @endsection

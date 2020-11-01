@@ -66,12 +66,6 @@ Register
                         <label for="inputAddress">Address</label>
                         <input type="text" name="Alamat" class="form-control" id="inputAddress" placeholder="Alamat" value="{{old('Alamat')}}">
                     </div>
-                    <div class="form-row">
-                        {{-- <div class="form-group col-md-4">
-                            <label>Tanggal Lahir</label>
-                            <input type="date" class="form-control" name="tgl_lahir">
-                        </div> --}}
-                    </div>
                     <div class="form-group">
                         <div class="form-check">
                             <input class="form-check-input" name="Terms" type="checkbox" id="gridCheck">
@@ -80,7 +74,7 @@ Register
                             </label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Sign in</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
                 </form>
                 <hr>
                 Already had an account? <a href="/login">click here for Log In.</a><br>

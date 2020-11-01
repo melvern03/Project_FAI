@@ -34,7 +34,7 @@ class MainController extends Controller
             if(Auth::user()->status == "Aktif"){
                 if(Auth::user()->jabatan == "Member"){
                     Users::where('username',Auth::user()->username)->update(['Last_Login'=>Carbon::now()]);
-                    return \redirect("/")->with("success", "Selamat Datang!");
+                    return \redirect("/")->with("success", Auth::user()->nama_user);
 
                 }
             }else if(Auth::user()->status == "Verifikasi"){
