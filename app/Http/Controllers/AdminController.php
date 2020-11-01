@@ -40,8 +40,6 @@ class AdminController extends Controller
     }
 
     function addBaju(Request $req){
-        
-        dd("stop sementar");
         if($req->ukuran != null && $req->category!=null){
             if(count($req->namaVariasi) == count($req->ukuran) && count($req->namaVariasi) == count($req->category)){
                 $tempId = "";
@@ -59,13 +57,24 @@ class AdminController extends Controller
                 }else{
                     $tempId = $tempId."_".$countData;
                 }
-
-                // DB::table('h_baju')->insert([
-                //     "ID_HBAJU"=>$tempId,
-                //     "NAMA_BAJU"=>$req->NamaModel,
-                //     "harga"=>$req->Harga,
-                //     "time_added"=>Carbon::now()
-                // ]);
+                $req->file("gambarModel")->move(public_path("/baju"),$tempId."-".$req->file("gambarModel")->getClientOriginalName());
+                DB::table('h_baju')->insert([
+                    "ID_HBAJU"=>$tempId,
+                    "NAMA_BAJU"=>$req->NamaModel,
+                    "harga"=>$req->Harga,
+                    "gambar"=>$tempId."-".$req->file("gambarModel")->getClientOriginalName(),
+                    "time_added"=>Carbon::now()
+                ]);
+                for ($i=0; $i < count($req->namaVariasi); $i++) {
+                    DB::table('d_baju')->insert([
+                        "ID_HBAJU"=>$tempId,
+                        "NAMA_BAJU"=>$req->namaVariasi[$i],
+                        "WARNA"=>$req->color[$i],
+                        "UKURAN"=>$req->ukuran[$i],
+                        "STOK"=>$req->stock[$i],
+                        "ID_KATEGORI"=>$req->category[$i]
+                    ]);
+                }
                 return redirect("/admin/home")->with("Sucess","Berhasil Menambahkan Baju");
             }else{
                 return redirect("/admin/home")->with("Errors","Gagal Menambahkan Baju");

@@ -38,18 +38,18 @@
         <form id='addBaju' method="POST" action="/admin/addBaju"  enctype="multipart/form-data">
             @csrf
           <h1>Tambah Baju</h1><br><br>
-          {{-- <div class="form-group col-md-6">
+          <div class="form-group col-md-6">
             <label for="inputCity">Nama Model</label>
             <input type="text" name="NamaModel" class="form-control" value="{{old('NamaModel')}}">
         </div>
         <div class="form-group col-md-6">
             <label for="inputTelp">Harga</label>
             <input type="number" name="Harga" class="form-control" id="inputTelp" value="{{old('Harga')}}">
-        </div> --}}
+        </div>
           <b>Gambar Model : </b> <input type="file" name="gambarModel" id="image-source" onchange="previewImage();" required>
           <br>
           <img id="image-preview" alt="image preview" style="width:400px;height:400px"/>
-          {{-- <hr>
+          <hr>
           <br>
           <h1>Tambah Variasi</h1>
           <table class="table table-bordered" id="dynamic_field">
@@ -77,13 +77,13 @@
                     @php
                         $data = DB::table('kategori')->get();
                         foreach ($data as $key => $value) {
-                            echo "<option>$value->NAMA_KATEGORI</option>";
+                            echo "<option value='$value->ID_KATEGORI'>$value->NAMA_KATEGORI</option>";
                         }
                     @endphp
                 </select></td>
               <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>
             </tr>
-          </table> --}}
+          </table>
           <button type="submit" id="btnAddModel" name='btnAddModel' class="btn btn-success">+ Add</button>
         </form>
         <script>
@@ -116,7 +116,7 @@
             <?php
                     $data = DB::table('kategori')->get();
                     foreach ($data as $key => $value) {
-                        echo "<option>$value->NAMA_KATEGORI</option>";
+                        echo "<option value='$value->ID_KATEGORI'>$value->NAMA_KATEGORI</option>";
                     }
                 ?>
           </select></td>
@@ -165,4 +165,7 @@
     alert(n_match);
 
   </script> --}}
+
+  {{-- Show image
+  <img src='/baju/{{$item->gambar}}'> --}}
 @endsection
