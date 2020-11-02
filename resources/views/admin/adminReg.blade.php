@@ -2,7 +2,7 @@
 @extends('Template')
 @extends('admin/navbar')
 @section('Title')
-    Home
+    Admin Register
 @endsection
 
 @section('Content')

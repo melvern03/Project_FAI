@@ -8,6 +8,10 @@
         <li class="nav-item">
           <a class="nav-link" href="/">Home</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/aboutUs">About Us</a>
+          </li>
+
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Category
@@ -22,7 +26,6 @@
                     <button class="dropdown-item" type="submit" name='btnKategori' value={{$item->ID_KATEGORI}}>{{$item->NAMA_KATEGORI}}</a>
                 </form>
                 @endforeach
-
             </div>
         </li>
         @if (Auth::check())

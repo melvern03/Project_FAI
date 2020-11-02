@@ -23,7 +23,8 @@ Route::prefix("/")->group(function(){
     Route::post("/shop/{kategori}","userController@shopCategory");
     Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
     Route::view('/detail', 'detail');
-    Route::get('/', 'userController@home' );
+    Route::get("/","userController@home");
+    Route::view("/aboutUs","AboutUs");
 });
 
 
@@ -44,3 +45,4 @@ Route::post("/regAdmin","AdminController@adminReg");
 Route::post("/logCheck","MainController@logCheck");
 Route::post("/logAdmin","AdminController@adminLog");
 Route::get("/logAuth","MainController@logout");
+Route::get("/logAuthAdmin","AdminController@logAdmin");

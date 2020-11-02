@@ -10,18 +10,18 @@
 
     <section>
         {{-- Start Toast --}}
-    <div class="toast" id="myToast" style="top: 0;right:0;margin:10px">
-        <div class="toast-header">
-            <strong class="mr-auto"><i class="fa fa-grav"></i>Sucess Login</strong>
-            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="toast" id="myToast" style="top: 0;right:0;margin:10px">
+            <div class="toast-header">
+                <strong class="mr-auto"><i class="fa fa-grav"></i>Sucess Login</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id='welcomeBody'>
+                <div>Berhasil Login Welcome</div>
+            </div>
         </div>
-        <div class="toast-body" id='welcomeBody'>
-            <div>Berhasil Login Welcome</div>
-        </div>
-    </div>
-    {{-- End Toast --}}
+        {{-- End Toast --}}
         <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" style="margin-bottom: 100px;">
             <ol class="carousel-indicators">
               <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
@@ -73,7 +73,7 @@
                 @if (count($newArrival) > 0)
                 @foreach ($newArrival as $item)
                     @if ($countNew <= 3)
-                    <div class="card" style="width: 30rem;">
+                    <div class="card" style="width: 30rem;margin:0 5px">
                     <img src="{{url('baju/'.$item->gambar)}}" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">{{$item->nama}}</h5>
@@ -110,7 +110,7 @@
         </div>
     </div>
     {{-- ================================================================================================================================= --}}
-    <br><br><br><br><br>
+    <br><br><br>
     @include('footer')
     <script>
         function notif(){

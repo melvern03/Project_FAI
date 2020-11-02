@@ -14,6 +14,11 @@ use PHPMailer\PHPMailer\SMTP;
 
 class AdminController extends Controller
 {
+    function logAdmin(){
+        Auth::logout();
+        return redirect("/");
+    }
+
     function adminLog(Request $req){
         $validateData = $req->validate(
             [

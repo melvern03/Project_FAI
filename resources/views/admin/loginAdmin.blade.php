@@ -25,7 +25,7 @@
           </div>
           <button class="btn btn-primary btn-block" type="submit">Login</button>
         </form><br>
-        <form action="/logAuth">
+        <form action="/logAuthAdmin">
             <button class="btn btn-primary btn-block" type="submit" style="width:50%;margin:auto">Back to Main Site</button>
         </form>
       </div>

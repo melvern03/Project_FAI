@@ -26,7 +26,6 @@ About Us
           </main>
           <br>
           <br>
-          <br>
   </div>
   <div id="trav" style="background-color:snow;text-align:center;">
     <br>
