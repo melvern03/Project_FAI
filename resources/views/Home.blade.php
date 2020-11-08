@@ -83,7 +83,7 @@
                                     {{"Rp " . number_format($item->harga,0,',','.')}}
                                 </div>
                                 <div class="col-6">
-                                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                                    <a href="{{ route('shop') }}" class="btn btn-primary">Shop Now</a>
                                 </div>
                             </div>
                         </div>

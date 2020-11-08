@@ -3,15 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class userController extends Controller
 {
+    public function addCart(Request $req){
+        if (Auth::check()){
+            $cart = Session::get('cart');
+            if(isset($cart[Auth::user()->nama_user])){
+                if(isset($cart[Auth::user()->nama_user][$req->idDbaju])){
+                    $cart[Auth::user()->nama_user][$req->idDbaju]['qty'] += 1;
+                }else{
+                    $cart[Auth::user()->nama_user][$req->idDbaju] = array('id_dbaju' => $req->idDbaju,
+                                                                          'id_hbaju' => $req->idHbaju,
+                                                                          'qty' => 1);
+                }
+            }else{
+                $cart[Auth::user()->nama_user][$req->idDbaju] = array('id_dbaju' => $req->idDbaju,
+                                                                          'id_hbaju' => $req->idHbaju,
+                                                                          'qty' => 1);
+            }
+            Session::put('cart', $cart);
+        }
+
+    }
     public function shop(){
-        $barang["baju"] = DB::table('h_baju as h')
-        ->join('d_baju as d', 'h.ID_HBAJU', '=', 'd.ID_HBAJU')
-        ->select('d.ID_DBAJU as ID_DBAJU', 'h.gambar as gambar', 'h.harga as harga', 'd.NAMA_BAJU as nama', 'd.ukuran as ukuran', 'd.warna as warna')
-        ->get();
+        $barang["Hbaju"] = DB::table('h_baju')->get();
+        $barang["baju"] = DB::table('d_baju')->get();
+        // dd(Session::get('cart'));
         return view("shop")->with($barang);
     }
     public function home(){
@@ -90,5 +111,10 @@ class userController extends Controller
             ->get();
         }
         return view('shop')->with($barang);
+    }
+    public function cekSession(){
+        // Session::forget('cart');
+        // Session::forget('barang');
+        dd(Session::all());
     }
 }

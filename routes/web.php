@@ -19,12 +19,16 @@ Route::prefix("/")->group(function(){
     Route::view('/login', 'Login');
     Route::view('/register', 'Register');
     Route::get('/shop', 'userController@shop')->name('shop');
+    Route::get('/addToCart', 'userController@addCart')->name('addCart');
     Route::post("/shop/sortBy","userController@shopSort");
     Route::post("/shop/{kategori}","userController@shopCategory");
     Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
     Route::view('/detail', 'detail');
     Route::get("/","userController@home");
     Route::view("/aboutUs","AboutUs");
+    Route::view("/cart","cart");
+
+    Route::get("/cek","userController@cekSession");
 });
 
 
