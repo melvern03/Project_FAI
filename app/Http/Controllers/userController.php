@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\resDbaju;
 use App\Http\Resources\resourcesSort;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,12 @@ class userController extends Controller
         $barang["baju"] = DB::table('d_baju')->get();
         // dd(Session::get('cart'));
         return view("shop")->with($barang);
+    }
+    public function dbaju(Request $req){
+        $dBarang = DB::table('d_baju as d')
+        ->where('d.ID_HBAJU','=',$req->hbaju)
+        ->get();
+        return resDbaju::collection($dBarang);
     }
     public function home(){
         $barang["newArrival"] = DB::table('h_baju as h')

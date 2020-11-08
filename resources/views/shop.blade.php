@@ -30,7 +30,7 @@
     <hr>
     <br><br>
 
-    <div id="itemBarng" style=" display: flex;flex-wrap: wrap;flex-direction: row;justify-content: space-evenly;">
+    <div id="itemBarang" style=" display: flex;flex-wrap: wrap;flex-direction: row;justify-content: space-evenly;">
         @foreach ($Hbaju as $item)
         <div class="col-lg-4 col-md-6 col-12">
             <div class="foto"><img src="{{url('baju/'.$item->gambar)}}" class="card-img-top" alt="..."></div>
@@ -97,18 +97,6 @@
             $.get('{{ url("/addToCart") }}',{idDbaju : idDbaju, idHbaju : id}, function(response) {
             });
         });
-
-        $(document).on('click', '.sortItem', function (e) {
-            var id = $(this).val();
-            console.log(id);
-            $.get('{{ url("/sortBy") }}', {sort : id}, function(response) {
-                var dom = ""
-                response.data.forEach(element => {
-                    echo("<?php ?>");
-                });
-            });
-
-            });
     });
     </script>
 @endsection

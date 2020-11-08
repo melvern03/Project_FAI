@@ -28,6 +28,7 @@ Route::prefix("/")->group(function(){
     Route::view("/cart","cart");
 
     Route::get("/sortBy","userController@shopSort");
+    Route::get("/dbaju","userController@dbaju");
     Route::get("/cek","userController@cekSession");
 });
 
