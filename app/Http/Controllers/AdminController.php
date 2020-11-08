@@ -154,4 +154,31 @@ class AdminController extends Controller
         $arrData = DB::table("d_baju")->where("ID_HBAJU",$req->nama)->get();
         return Variant::collection($arrData);
     }
+    function searchData(Request $req){
+        $arrData = DB::table("d_baju")->where("id_dbaju",$req->nama)->get();
+        return Variant::collection($arrData);
+    }
+
+    function editData(Request $req){
+        $nama = $req->nama;
+        $warna = $req->warna;
+        $ukuran = $req->ukuran;
+        $stok = $req->stok;
+        $kategori = $req->kategori;
+        try {
+            DB::table('d_baju')->where("id_dbaju",$req->id)->update(["NAMA_BAJU"=>$nama, "WARNA"=>$warna, "UKURAN"=>$ukuran, "ID_KATEGORI"=>$kategori, "STOK"=>$stok]);
+            return "succes";
+        } catch (\Throwable $th) {
+            return "gagal";
+        }
+
+    }
+    function deleteVariant(Request $req){
+        try {
+            DB::table('d_baju')->where('id_dbaju',$req->nama)->delete();
+            return "succes";
+        } catch (\Throwable $th) {
+            return "gagal";
+        }
+    }
 }

@@ -42,27 +42,13 @@
         </tbody>
     </table>
     <br>
-    <div class="tableVariant">
-        <h3>Model Variant</h3>
-        <table class='table display' id='variantTable'>
-            <thead>
-                <tr>
-                    <th>Nama Variant</th>
-                    <th>Ukuran</th>
-                    <th>Warna</th>
-                    <th>Stock</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="variant_body">
+    <div id="containerVariant">
 
-            </tbody>
-        </table>
     </div>
 
     {{-- Modal --}}
-    <div class="modal fade" id="empModal" role="dialog">
-        <div class="modal-dialog">
+    <div class="modal fade " id="empModal" role="dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Data Baju</h4>
@@ -74,51 +60,97 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button type="submit" class='btn btn-info btnEdit'>Edit</button>
+                    <button type="submit" class='btn btn-info' id="btnConfirmEdit">Edit</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 
+
     {{-- 2nd Modal --}}
     <div class="modal fade" id="deleteModal" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Delete</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <form id='isiDeleteModal'>
-                    <div class="modal-body">
+                <form>
+                    <div class="modal-body" id="isiDeleteModal">
                         Apakah anda yakin ingin menghapus variant baju ?
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button type="submit" class='btn btn-info btnEdit'>Delete</button>
+                    <button type="submit" class='btn btn-info' id="btnDeleteModal">Delete</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- Modal Confirm Edit --}}
+    <div class="modal fade" id="editConfirmModal" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirm Edit</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form>
+                    <div class="modal-body" id="isiConfrimEdit">
+                        Apakah anda yakin ingin menghapus variant baju ?
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="submit" class='btn btn-info' id='confirmVariantEdit'>Yes</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id='backEditModal'>No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 <script>
     $(document).ready(function () {
         $('#table_id').DataTable();
-        $(".tableVariant").hide();
+        $("#containerVariant").hide();
         $(".showDetail").submit(function (e) {
             e.preventDefault();
             var nama = $(this).find(".detailBtn").val();
             $.get('{{ url("admin/home/variant") }}',{nama : nama}, function(response) {
-                $(".tableVariant").hide();
-                var dom = "";
+                $("#containerVariant").hide();
+                var dom=`<h3>Model Variant</h3>
+                <table class='table display' id='variantTable' style="margin:0px">
+            <thead>
+                <tr>
+                    <th>Nama Variant</th>
+                    <th>Ukuran</th>
+                    <th>Warna</th>
+                    <th>Stock</th>
+                    <th>Kategori</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>`;
                 response.data.forEach(el => {
-                    var n_match = ntc.name(el.WARNA);
+                var n_match = ntc.name(el.WARNA);
+                var Kategori = "";
+                if(el.ID_KATEGORI == 1){
+                    Kategori = "Man T-Shirt";
+                }else if(el.ID_KATEGORI == 2){
+                    Kategori = "Woman T-Shirt";
+                }else if(el.ID_KATEGORI == 3){
+                    Kategori = "Man Jacket & Sweater";
+                }else if(el.ID_KATEGORI==4){
+                    Kategori = "Woman Jacket & Sweater";
+                }
                     dom += `<tr>
                         <td>`+el.NAMA_BAJU+`</td>
                         <td>`+el.UKURAN+`</td>
                         <td style='background-color:`+n_match[0]+`;border:2px solid black'></td>
                         <td>`+el.STOK+`</td>
+                        <td>`+Kategori+`</td>
                         <td>
                             <button type='submit' class='btn btn-danger hapusData' value=`+el.id_dbaju+` data='`+el.NAMA_BAJU+`'>Delete</button>
                             <button type='submit' class='btn btn-warning editModel' value=`+el.id_dbaju+`>Edit</button>
@@ -128,30 +160,126 @@
                 if (response.data.length <= 0) {
                     dom += "<tr><td>Tidak ada data ditemukan</td></tr>";
                 }
-                $(".tableVariant").show('slow');
-                $("#variant_body").html(dom);
+                dom += `</tbody></table>`;
+                $("#containerVariant").show('slow');
+                $("#containerVariant").html(dom);
+                $("#variantTable").DataTable();
             });
         });
+
+        // Edit Model Function
         $(document).on('click', '.editModel', function (e) {
             var id = $(this).val();
             $.get('{{ url("admin/home/getDataBaju") }}',{nama : id}, function(response) {
-                // $(".tableVariant").hide();
-                // $('#variant_table').DataTable().ajax.reload();
-                // var dom = "";
-                // response.data.forEach(el => {
-                //     var n_match = ntc.name(el.WARNA);
-                //     dom += ``;
-                // });
-                // $("#editModalBody").html(dom);
-                // $('#empModal').modal('show');
+                var dom = "";
+                var ukuran = "";
+                var Kategori = "";
+                response.data.forEach(el => {
+                    $("#btnConfirmEdit").attr("value",el.id_dbaju);
+                    ukuran = el.UKURAN;
+                    Kategori = el.ID_KATEGORI;
+                    dom += `
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Nama Variasi</label>
+                        <input type="text" id="namaVar" class="form-control" value="`+el.NAMA_BAJU+`">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Ukuran</label>
+                        <select class='form-control' id='ukuranVar' style='width: 200px;' readonly>
+                            <option value='XS' id="XS">XS</option>
+                            <option value='S' id="S">S</option>
+                            <option value='M' id="M">M</option>
+                            <option value='L' id="L">L</option>
+                            <option value='XL' id="XL">XL</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Warna</label>
+                        <input type='color' id='colorVar' placeholder='Warna Baju' class='form-control color_list' value='`+el.WARNA+`'>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Stock</label>
+                        <input type="number" id="stokVar" class="form-control" value="`+el.STOK+`">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Kategori</label>
+                        <select class='form-control' id='kategoriVar' style='width: 200px;' readonly>
+                            <option value='1' id="kat1">Man T-Shirt</option>
+                            <option value='2' id="kat2">Woman T-Shirt</option>
+                            <option value='3' id="kat3">Man Jacket & Sweater</option>
+                            <option value='4' id="kat4">Woman Jacket & Sweater</option>
+                        </select>
+                    </div>
+                    `;
+                });
+                $("#editModalBody").html(dom);
+                $("#"+ukuran).attr("selected",true);
+                $("#kat"+Kategori).attr("selected",true);
+                $('#empModal').modal('show');
 
             });
         });
+        $("#btnConfirmEdit").click(function(){
+            var id = $(this).val();
+            $.get('{{ url("admin/home/getDataBaju") }}',{nama : id}, function(response) {
+                var dom = "";
+                response.data.forEach(el => {
+                $("#confirmVariantEdit").attr('value',el.id_dbaju);
+                    dom += `Apakah anda yakin ingin menyimpan perubahan variant baju `+el.NAMA_BAJU+` ?`;
+                });
+                $("#isiConfrimEdit").html(dom);
+                $('#editConfirmModal').modal('show');
+                $("#empModal").modal("hide");
+            });
+        });
+
+        $("#confirmVariantEdit").click(function(){
+            var id = $(this).val();
+            var nama = $("#namaVar").val();
+            var warna = $("#colorVar").val();
+            var stok = $("#stokVar").val();
+            var ukuran = $("#ukuranVar").val();
+            var kategori = $("#kategoriVar").val();
+            $.get('{{ url("admin/home/editVariant") }}',{id : id,nama:nama,warna:warna,stok:stok,ukuran:ukuran, kategori:kategori}, function(response) {
+                if(response == "succes"){
+                    alert("Berhasil Edit Variant Baju");
+                    location.reload();
+                }
+            });
+        });
+        $("#backEditModal").click(function(){
+            $('#editConfirmModal').modal('hide');
+            $("#empModal").modal("show");
+        });
+
+        // End Edit Model Function
+
+        //Delete Model Function
         $(document).on('click', '.hapusData', function (e) {
             var id = $(this).val();
-            var nama= $(this).attr("data");
-            $('#deleteModal').modal('show');
+            $.get('{{ url("admin/home/getDataBaju") }}',{nama : id}, function(response) {
+                var dom = "";
+                response.data.forEach(el => {
+                $("#btnDeleteModal").attr("value",el.id_dbaju);
+                    dom += `Apakah anda yakin ingin menghapus variant baju `+el.NAMA_BAJU+` ?`;
+                });
+                $("#isiDeleteModal").html(dom);
+                $('#deleteModal').modal('show');
+
+            });
         });
+
+        $("#btnDeleteModal").click(function(){
+            var id = $(this).val();
+            $.get('{{ url("admin/home/deleteVariant") }}',{nama : id}, function(response) {
+                if(response == "succes"){
+                    alert("Berhasil Menghapus Variant");
+                    location.reload();
+                }
+
+            });
+        });
+        //End Model Function
     });
 </script>
 @endsection
