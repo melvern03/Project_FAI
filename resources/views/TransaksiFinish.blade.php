@@ -24,7 +24,7 @@
     </main>
 </div>
 
-
-</div>
 @include('footer')
+</div>
 @endsection
+

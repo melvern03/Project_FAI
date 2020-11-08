@@ -14,54 +14,84 @@
             <br>
             <h1 class="display-3">Your Order</h1><br>
             <small class="text-muted">Please Finish Your Transaction</small><br>
-            <label>Name</label><br>
-            <label>Address</label><br>
-            <label>Email</label><br>
-            <label>Phone</label><br>
-            <label>Shipping Method</label><br>
+            @if (Auth::check())
+             <label>{{Auth::User()->nama_user}}</label> <br>
+            <label>{{DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('alamat')}}</label> <br>
+            <label>{{DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('email')}}</label> <br>
+            <label>{{DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('no_telp')}}</label><br>
+            @endif
+            @if (Session::has('kirim'))
+                <label>Shipping Method : {{Session::get('kirim')}}</label><br>
+            @endif
+            <br>
             <label>Your Items : </label><br>
             <table class="table">
                 <thead class="thead-dark">
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Nama Baju</th>
+                    <th scope="col">qty</th>
+                    <th scope="col">Harga</th>
+                    <th scope="col">Total</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                    @php
+                       $subtotal = 0;
+                    @endphp
+                    @if (Session::has('cart'))
+                        @foreach (Session::get('cart') as $key => $item)
+                            @if ($key==Auth::User()->nama_user)
+                                @foreach ($item as $databaju)
+                                <tr>
+                                    <td scope="row">{{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU')}}</td>
+                                    <td>{{$databaju['qty']}}</td>
+                                    <td> {{"Rp. ".number_format(DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'))}}</td>
+                                    <td>
+                                       {{"Rp. ".number_format(($databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga')))}}
+                                    </td>
+                                    @php
+                                        $subtotal += ($databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'));
+                                    @endphp
+                                </tr>
+                                @endforeach
+                            @endif
+                        @endforeach
+                    @endif
                 </tbody>
               </table>
               <br>
-              <h3>Grand Total : </h3>
+              @php
+                   if (Session::get('kirim')=="grab")
+                    {
+                        $subtotal += 5000;
+                    }
+                    else if (Session::get('kirim')=="jne")
+                    {
+                        $subtotal += 10000;
+                    }
+                    else{
+                        $subtotal += 15000;
+                    }
+              @endphp
+            <h3>Grand Total : {{"Rp. ".number_format($subtotal)}}</h3>
               <br>Please kindly transfer <br>
                in this Number : 10111101010111
               <br><hr>
               <h6>Please Kindly Upload Your Transaction Proof</h6><br>
               <br>
-              <button class="btn btn-primary">Choose</button> Choose your file...
+              <form action="/checkout" method="post">
+                @csrf
+                <input type="file" class="btn btn-primary" name="file">
+                <br>
+                @error('file')
+                    <span class="invalid-input-mess" style="color: red">{{$message}}</span>
+                @enderror
               <br><br><br>
-              <button class="btn btn-danger">Cancel</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-success">Proceed <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-truck" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-              </svg></button>
+              <div class="row">
+                  <div class="col-md-6" style="text-align: right"><a href="/cart" class="btn btn-danger">Cancel</a></div>
+                  <div class="col-md-6" style="text-align: left"><button type="submit" class="btn btn-success">Proced</button></div>
+              </div>
+            </form>
               <br><br><br>
               <h5><small class="text-muted">If you already proceed, you cannot cancel your transaction.</small></h5>
         </div>
