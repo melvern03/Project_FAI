@@ -23,6 +23,10 @@ Route::prefix("/")->group(function(){
     Route::post("/shop/{kategori}","userController@shopCategory");
     Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
     Route::view('/detail', 'detail');
+    Route::view('/cart', 'Cart');
+    Route::get('/pilih/{id}','cartcontroler@kirim');
+    Route::post('/checkout','cartcontroler@checkout');
+    Route::view('/trans', 'Track');
     Route::get("/","userController@home");
     Route::view("/aboutUs","AboutUs");
 });
