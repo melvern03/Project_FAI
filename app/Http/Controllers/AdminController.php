@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Variant;
 use Illuminate\Http\Request;
 use App\Model\Users;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\Support\Carbon;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+
 
 class AdminController extends Controller
 {
@@ -94,6 +96,16 @@ class AdminController extends Controller
     }
 
     function addBaju(Request $req){
+        $validate = $req->validate(
+            [
+                "gambarModel"=>"mimetypes:image/jpeg,image/png",
+                "namaModel"=>"required",
+                "Harga"=>"required"
+            ],
+            [
+                "gambarModel.mimetypes"=>"File yang diupload harus dalam bentuk gambar"
+            ]
+        );
         if($req->ukuran != null && $req->category!=null){
             if(count($req->namaVariasi) == count($req->ukuran) && count($req->namaVariasi) == count($req->category)){
                 $tempId = "";
@@ -137,12 +149,36 @@ class AdminController extends Controller
         }else{
             return redirect("/admin/home")->with("Errors","Berhasil Menambahkan Baju");
         }
-        //dd($req->color);
+    }
+    function searchVariant(Request $req){
+        $arrData = DB::table("d_baju")->where("ID_HBAJU",$req->nama)->get();
+        return Variant::collection($arrData);
+    }
+    function searchData(Request $req){
+        $arrData = DB::table("d_baju")->where("id_dbaju",$req->nama)->get();
+        return Variant::collection($arrData);
+    }
 
-        // $validateData = $req->validate(
-        //     [
-        //         "category"=>"required"
-        //     ]
-        // );
+    function editData(Request $req){
+        $nama = $req->nama;
+        $warna = $req->warna;
+        $ukuran = $req->ukuran;
+        $stok = $req->stok;
+        $kategori = $req->kategori;
+        try {
+            DB::table('d_baju')->where("id_dbaju",$req->id)->update(["NAMA_BAJU"=>$nama, "WARNA"=>$warna, "UKURAN"=>$ukuran, "ID_KATEGORI"=>$kategori, "STOK"=>$stok]);
+            return "succes";
+        } catch (\Throwable $th) {
+            return "gagal";
+        }
+
+    }
+    function deleteVariant(Request $req){
+        try {
+            DB::table('d_baju')->where('id_dbaju',$req->nama)->delete();
+            return "succes";
+        } catch (\Throwable $th) {
+            return "gagal";
+        }
     }
 }

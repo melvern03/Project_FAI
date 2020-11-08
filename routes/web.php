@@ -44,7 +44,12 @@ Route::prefix("admin")->group(function() {
     Route::view("/", "admin.loginAdmin");
 
     Route::view("/home","admin.main");
-    Route::post("/addBaju","AdminController@addBaju");
+    Route::view("/addBaju","admin.adminAddBaju");
+    Route::post("/addNew","AdminController@addBaju");
+    Route::get("/home/variant", "AdminController@searchVariant");
+    Route::get("/home/getDataBaju","AdminController@searchData");
+    Route::get("/home/editVariant","AdminController@editData");
+    Route::get("/home/deleteVariant","AdminController@deleteVariant");
     Route::view("/regAdmin","admin.adminReg");
 });
 
