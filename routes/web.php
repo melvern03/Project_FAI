@@ -20,7 +20,6 @@ Route::prefix("/")->group(function(){
     Route::view('/register', 'Register');
     Route::get('/shop', 'userController@shop')->name('shop');
     Route::get('/addToCart', 'userController@addCart')->name('addCart');
-    Route::post("/shop/sortBy","userController@shopSort");
     Route::post("/shop/{kategori}","userController@shopCategory");
     Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
     Route::view('/detail', 'detail');
@@ -28,6 +27,7 @@ Route::prefix("/")->group(function(){
     Route::view("/aboutUs","AboutUs");
     Route::view("/cart","cart");
 
+    Route::get("/sortBy","userController@shopSort");
     Route::get("/cek","userController@cekSession");
 });
 

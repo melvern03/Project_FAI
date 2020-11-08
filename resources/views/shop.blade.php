@@ -17,10 +17,10 @@
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Sort By
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="submit" name="btnSort" value="tertinggi">Harga Tertinggi</button>
-                        <button class="dropdown-item" type="submit" name="btnSort" value="terendah">Harga Terendah</button>
-                        <button class="dropdown-item" type="submit" name="btnSort" value="terbaru">Terbaru</button>
-                        <button class="dropdown-item" type="submit" name="btnSort" value="terlama">Terlama</button>
+                        <button class="dropdown-item sortItem" type="submit" name="btnSort" value="tertinggi">Harga Tertinggi</button>
+                        <button class="dropdown-item sortItem" type="submit" name="btnSort" value="terendah">Harga Terendah</button>
+                        <button class="dropdown-item sortItem" type="submit" name="btnSort" value="terbaru">Terbaru</button>
+                        <button class="dropdown-item sortItem" type="submit" name="btnSort" value="terlama">Terlama</button>
                     </div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
     <hr>
     <br><br>
 
-    <div style=" display: flex;flex-wrap: wrap;flex-direction: row;justify-content: space-evenly;">
+    <div id="itemBarng" style=" display: flex;flex-wrap: wrap;flex-direction: row;justify-content: space-evenly;">
         @foreach ($Hbaju as $item)
         <div class="col-lg-4 col-md-6 col-12">
             <div class="foto"><img src="{{url('baju/'.$item->gambar)}}" class="card-img-top" alt="..."></div>
@@ -95,10 +95,20 @@
             var id = $(this).val();
             var idDbaju = $('#dBaju'+id).val();
             $.get('{{ url("/addToCart") }}',{idDbaju : idDbaju, idHbaju : id}, function(response) {
-
-
             });
         });
+
+        $(document).on('click', '.sortItem', function (e) {
+            var id = $(this).val();
+            console.log(id);
+            $.get('{{ url("/sortBy") }}', {sort : id}, function(response) {
+                var dom = ""
+                response.data.forEach(element => {
+                    echo("<?php ?>");
+                });
+            });
+
+            });
     });
     </script>
 @endsection
