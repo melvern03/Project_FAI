@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\Session;
 
 class cartcontroler extends Controller
 {
-    public function kirim($id)
+    public function kirim($id,$harga)
     {
         Session::put('kirim',$id);
+        Session::put('harga',$harga);
         return view("Waiting");
     }
 

@@ -15,24 +15,30 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::prefix("/")->group(function(){
-    Route::view('/aboutUsPage', 'AboutUs');
-    Route::view('/login', 'Login');
-    Route::view('/register', 'Register');
-    Route::get('/shop', 'userController@shop')->name('shop');
-    Route::get('/addToCart', 'userController@addCart')->name('addCart');
-    Route::post("/shop/{kategori}","userController@shopCategory");
-    Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
-    Route::view('/detail', 'detail');
-    Route::view('/cart', 'Cart');
-    Route::get('/pilih/{id}','cartcontroler@kirim');
-    Route::post('/checkout','cartcontroler@checkout');
-    Route::view('/trans', 'Track');
+    // User
     Route::get("/","userController@home");
     Route::view("/aboutUs","AboutUs");
+    Route::view('/aboutUsPage', 'AboutUs');
+    Route::view("/verifikasi","verifikasi");
+    Route::post("/verifikasiData","MainController@verifikasi");
     Route::view("/cart","cart");
+    Route::view('/login', 'Login');
+    Route::view('/register', 'Register');
+    //End User
 
-    Route::get("/sortBy","userController@shopSort");
-    Route::get("/dbaju","userController@dbaju");
+    //Shop
+    Route::get('/shop', 'userController@shop')->name('shop');
+    Route::post("/shop/{kategori}","userController@shopCategory");
+    Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
+    Route::get('/addToCart', 'userController@addCart')->name('addCart');
+    //End Shop
+
+    //Transaksi
+    Route::view('/cart', 'Cart');
+    Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
+    Route::post('/checkout','cartcontroler@checkout');
+    Route::view('/trans', 'Track');
+    //End Transaksi
     Route::get("/cek","userController@cekSession");
 });
 

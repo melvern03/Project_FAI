@@ -61,11 +61,11 @@
               </table>
               <br>
               @php
-                   if (Session::get('kirim')=="grab")
+                   if (Session::get('kirim')=="GRAB")
                     {
                         $subtotal += 5000;
                     }
-                    else if (Session::get('kirim')=="jne")
+                    else if (Session::get('kirim')=="JNE")
                     {
                         $subtotal += 10000;
                     }
@@ -73,6 +73,7 @@
                         $subtotal += 15000;
                     }
               @endphp
+              <h2>Biaya Ongkir : {{"Rp. ".number_format(Session::get('harga'))}}</h2>
             <h3>Grand Total : {{"Rp. ".number_format($subtotal)}}</h3>
               <br>Please kindly transfer <br>
                in this Number : 10111101010111

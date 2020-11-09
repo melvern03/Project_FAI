@@ -45,7 +45,7 @@
             <div class="col-md-4" style="text-align: left">
                 <h6>Description</h6>
                 <ul>
-                    <li >Crew neck</li>
+                    <li>Crew neck</li>
                     <li>Branding details</li>
                     <li>Straight hem</li>
                     <li>Manufacturer: China</li>
