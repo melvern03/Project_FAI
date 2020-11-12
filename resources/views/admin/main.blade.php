@@ -6,6 +6,27 @@
 
 @section('Content')
 <main role="main" class="col-md-10 ml-sm-auto col-lg-11 px-md-4">
+    @if (Session("errors"))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Errors',
+                text: 'Terjadi Kesalahan Silahkan Coba Lagi'
+            })
+        </script>
+    @endif
+    @if (Session("variantDone"))
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Berhasil Menambah Variant Baju',
+                showConfirmButton: false,
+                timer: 2000
+            })
+        </script>
+    @endif
+<div id="containerModel">
     <h2>List Baju</h2>
     <form action="/admin/addBaju">
         <button type="submit" class="btn btn-success">Add New Model Baju</button>
@@ -41,6 +62,7 @@
             @endif
         </tbody>
     </table>
+</div>
     <br>
     <div id="containerVariant">
 
@@ -117,11 +139,19 @@
         $("#containerVariant").hide();
         $(".showDetail").submit(function (e) {
             e.preventDefault();
+            var tempId = "";
             var nama = $(this).find(".detailBtn").val();
             $.get('{{ url("admin/home/variant") }}',{nama : nama}, function(response) {
                 $("#containerVariant").hide();
                 var dom=`<h3>Model Variant</h3>
-                <table class='table display' id='variantTable' style="margin:0px">
+                <span>
+                <button type='submit' id='backToListModel' class='btn btn-primary'>Back</button>
+                <form action='home/AddVariant' method='POST'>
+                    @csrf
+                    <button type='submit' id='addVariantBaju' class='btn btn-success' name='idBtn'>Add New Variant</button>
+                </form>
+                </span><br><br>
+                <table class='table display' id='variantTable'>
             <thead>
                 <tr>
                     <th>Nama Variant</th>
@@ -134,6 +164,7 @@
             </thead>
             <tbody>`;
                 response.data.forEach(el => {
+                    tempId = el.ID_HBAJU;
                 var n_match = ntc.name(el.WARNA);
                 var Kategori = "";
                 if(el.ID_KATEGORI == 1){
@@ -161,11 +192,20 @@
                     dom += "<tr><td>Tidak ada data ditemukan</td></tr>";
                 }
                 dom += `</tbody></table>`;
+                $("#containerModel").hide();
                 $("#containerVariant").show('slow');
                 $("#containerVariant").html(dom);
+                $("#addVariantBaju").attr("value",tempId);
                 $("#variantTable").DataTable();
             });
         });
+
+        $(document).on('click',"#backToListModel",function(e){
+            e.preventDefault();
+            $("#containerModel").show('slow');
+            $("#containerVariant").hide();
+
+        })
 
         // Edit Model Function
         $(document).on('click', '.editModel', function (e) {
@@ -242,8 +282,11 @@
             var kategori = $("#kategoriVar").val();
             $.get('{{ url("admin/home/editVariant") }}',{id : id,nama:nama,warna:warna,stok:stok,ukuran:ukuran, kategori:kategori}, function(response) {
                 if(response == "succes"){
-                    alert("Berhasil Edit Variant Baju");
-                    location.reload();
+                    swal.fire({title: "Edit Successfull", text: "Berhasil Edit Variant Baju", type:
+                        "success"}).then(function(){
+                            location.reload();
+                        }
+                    );
                 }
             });
         });
@@ -273,8 +316,11 @@
             var id = $(this).val();
             $.get('{{ url("admin/home/deleteVariant") }}',{nama : id}, function(response) {
                 if(response == "succes"){
-                    alert("Berhasil Menghapus Variant");
-                    location.reload();
+                    swal.fire({title: "Delete Successfull", text: "Berhasil Menghapus Variant Baju", type:
+                        "success"}).then(function(){
+                            location.reload();
+                        }
+                    );
                 }
 
             });

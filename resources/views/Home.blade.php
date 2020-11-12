@@ -7,21 +7,7 @@
 @section('Content')
 <div style="background-color:white;background-size:100%;;text-align: center;">
     @include('Navbar')
-
     <section>
-        {{-- Start Toast --}}
-        <div class="toast" id="myToast" style="top: 0;right:0;margin:10px">
-            <div class="toast-header">
-                <strong class="mr-auto"><i class="fa fa-grav"></i>Sucess Login</strong>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="toast-body" id='welcomeBody'>
-                <div>Berhasil Login Welcome</div>
-            </div>
-        </div>
-        {{-- End Toast --}}
         <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" style="margin-bottom: 100px;">
             <ol class="carousel-indicators">
               <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
@@ -120,9 +106,29 @@
     </script>
 </div>
 @if (Session("success"))
-<script type='text/javascript'>
-    document.getElementById("welcomeBody").innerHTML = "Welcome {{Session('success')}}"
-    notif()
+<script>
+    let timerInterval
+Swal.fire({
+  title: 'Login Success',
+  html: 'Welcome {!! Auth::User()->nama_user !!}',
+  timer: 1500,
+  willOpen: () => {
+    Swal.showLoading()
+    timerInterval = setInterval(() => {
+      const content = Swal.getContent()
+      if (content) {
+        const b = content.querySelector('b')
+        if (b) {
+          b.textContent = Swal.getTimerLeft()
+        }
+      }
+    }, 100)
+  },
+  onClose: () => {
+    clearInterval(timerInterval)
+  }
+}).then((result) => {
+})
 </script>
 @endif
 @endsection

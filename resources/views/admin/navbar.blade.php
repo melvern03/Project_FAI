@@ -54,7 +54,7 @@
                 @if (Auth::user()->jabatan == "Owner")
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link actived" href="/admin/regAdmin">
+                        <a class="nav-link actived" href="/admin/list">
                             <span data-feather="file"></span>
                             Admin
                         </a>
