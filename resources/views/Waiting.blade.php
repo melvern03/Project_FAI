@@ -80,11 +80,11 @@
               <br><hr>
               <h6>Please Kindly Upload Your Transaction Proof</h6><br>
               <br>
-              <form action="/checkout" method="post">
+              <form action="/checkout" method="post" enctype="multipart/form-data">
                 @csrf
-                <input type="file" class="btn btn-primary" name="file">
+                <input type="file" name="fotocek" id="" class="btn btn-primary">
                 <br>
-                @error('file')
+                @error('fotocek')
                     <span class="invalid-input-mess" style="color: red">{{$message}}</span>
                 @enderror
               <br><br><br>

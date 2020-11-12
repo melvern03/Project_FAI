@@ -35,6 +35,7 @@ Route::prefix("/")->group(function(){
 
     //Transaksi
     Route::view('/cart', 'Cart');
+    Route::get('/hapus/{id}','cartcontroler@hapuscart');
     Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
     Route::post('/checkout','cartcontroler@checkout');
     Route::view('/trans', 'Track');

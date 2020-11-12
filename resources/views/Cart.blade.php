@@ -20,7 +20,6 @@
     </h3>
     <hr>
 </div>
-
     <div style=" display: flex;flex-wrap: nowrap;flex-direction: row;justify-content: space-evenly;">
         @if (Session::has('cart'))
             @foreach (Session::get('cart') as $key => $item)
@@ -55,7 +54,7 @@
                                 <div class="col-md-6">{{$databaju['qty']}}</div>
                             </div>
 
-                            <a href="#" class="btn btn-danger">Remove</a>
+                        <a href="/hapus/{{$databaju['id_dbaju']}}" class="btn btn-danger">Remove</a>
                         </div>
                     </div>
                     @endforeach
