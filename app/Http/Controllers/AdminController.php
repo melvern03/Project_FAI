@@ -92,7 +92,7 @@ class AdminController extends Controller
         $newUsers->status="Aktif";
         $newUsers->jabatan="Admin";
         $newUsers->save();
-        return redirect("/admin/regAdmin");
+        return redirect("/admin/list")->with('SuccessAdd',"Berhasil");
     }
 
     function addBaju(Request $req){
@@ -179,6 +179,31 @@ class AdminController extends Controller
             return "succes";
         } catch (\Throwable $th) {
             return "gagal";
+        }
+    }
+
+    function addVariant(Request $req){
+        $data["id"]= $req->idBtn;
+        return view('admin.AddVariant')->with($data);
+    }
+    function addMoreVariant(Request $req){
+        if($req->ukuran != null && $req->category != null){
+            if(count($req->namaVariasi) == count($req->ukuran) && count($req->namaVariasi) == count($req->category)){
+                $id = $req->btnAddNewVariant;
+                for ($i=0; $i < count($req->namaVariasi); $i++) {
+                    DB::table('d_baju')->insert([
+                        "ID_HBAJU"=>$id,
+                        "NAMA_BAJU"=>$req->namaVariasi[$i],
+                        "WARNA"=>$req->color[$i],
+                        "UKURAN"=>$req->ukuran[$i],
+                        "STOK"=>$req->stock[$i],
+                        "ID_KATEGORI"=>$req->category[$i]
+                    ]);
+                }
+                return redirect("/admin/home")->with("variantDone","ok");
+            }
+        }else{
+            return redirect("/admin/home")->with("errors","kosong");
         }
     }
 }
