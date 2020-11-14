@@ -34,7 +34,6 @@ class userController extends Controller
     public function shop(){
         $barang["Hbaju"] = DB::table('h_baju')->get();
         $barang["baju"] = DB::table('d_baju')->get();
-        // dd(Session::get('cart'));
         return view("shop")->with($barang);
     }
     public function dbaju(Request $req){
@@ -52,33 +51,39 @@ class userController extends Controller
         return view("Home")->with($barang);
     }
     public function shopSort(Request $req){
-        if($req->sort == 'tertinggi'){
-            $barang = DB::table('h_baju')
+        if($req->btnSort == 'tertinggi'){
+            $barang['Hbaju'] = DB::table('h_baju')
             ->orderBy('harga', 'desc')
             ->get();
-        }else if($req->sort == 'terendah'){
-            $barang = DB::table('h_baju')
+        }else if($req->btnSort == 'terendah'){
+            $barang['Hbaju'] = DB::table('h_baju')
             ->orderBy('harga', 'asc')
             ->get();
-        }else if($req->sort == 'terbaru'){
-            $barang = DB::table('h_baju')
+        }else if($req->btnSort == 'terbaru'){
+            $barang['Hbaju'] = DB::table('h_baju')
             ->orderBy('time_added', 'desc')
             ->get();
-        }else if($req->sort == 'terlama'){
-            $barang = DB::table('h_baju')
+        }else if($req->btnSort == 'terlama'){
+            $barang['Hbaju'] = DB::table('h_baju')
             ->orderBy('time_added', 'asc')
             ->get();
+        }else{
+            return redirect("shop");
         }
-        return resourcesSort::collection($barang);
+        $barang["baju"] = DB::table('d_baju')->get();
+        return view("shop")->with($barang);
     }
     public function shopCategory(Request $req){
-        $barang["Hbaju"] = DB::table('h_baju as h')
-            ->join('d_baju as d', 'h.ID_HBAJU', '=', 'd.ID_HBAJU')
-            ->select('d.ID_DBAJU as ID_DBAJU', 'h.gambar as gambar', 'h.harga as harga', 'd.NAMA_BAJU as nama', 'd.ukuran as ukuran', 'd.warna as warna')
-            ->where('d.ID_KATEGORI',$req->btnKategori)
-            ->get();
-        $barang['kategori'] = $req->btnKategori;
-        return view('shop')->with($barang);
+        if($req->btnKategori){
+            $barang['baju'] = DB::table('d_baju')->where('ID_KATEGORI',$req->btnKategori)->get();
+            foreach ($barang['baju'] as $key => $value) {
+                $barang["Hbaju"] = DB::table('h_baju')->where('ID_HBAJU',$value->ID_HBAJU)->get();
+            }
+            return view('shop')->with($barang);
+        }else{
+            return redirect("/shop");
+        }
+
     }
     public function shopCategorySort(Request $req, $kategori){
         if($req->btnSort == 'tertinggi'){
