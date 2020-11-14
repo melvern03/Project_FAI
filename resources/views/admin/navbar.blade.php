@@ -34,6 +34,7 @@
                         </a>
                     </li>
                 </ul>
+                <hr>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link actived" href="/admin/ListTransaksi">
@@ -42,6 +43,7 @@
                         </a>
                     </li>
                 </ul>
+                <hr>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link actived" href="/admin/promo">
@@ -50,6 +52,7 @@
                         </a>
                     </li>
                 </ul>
+                <hr>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link actived" href="#">
@@ -58,6 +61,7 @@
                         </a>
                     </li>
                 </ul>
+                <hr>
                 @if (Auth::check())
                 @if (Auth::user()->jabatan == "Owner")
                 <ul class="nav flex-column">
@@ -68,6 +72,7 @@
                         </a>
                     </li>
                 </ul>
+                <hr>
                 @endif
                 @endif
 
