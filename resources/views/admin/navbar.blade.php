@@ -36,6 +36,14 @@
                 </ul>
                 <ul class="nav flex-column">
                     <li class="nav-item">
+                        <a class="nav-link actived" href="/admin/ListTransaksi">
+                            <span data-feather="file"></span>
+                            List Transaksi
+                        </a>
+                    </li>
+                </ul>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
                         <a class="nav-link actived" href="/admin/promo">
                             <span data-feather="file"></span>
                             Promo

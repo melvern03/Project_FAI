@@ -113,7 +113,6 @@ Swal.fire({
   html: 'Welcome {!! Auth::User()->nama_user !!}',
   timer: 1500,
   willOpen: () => {
-    Swal.showLoading()
     timerInterval = setInterval(() => {
       const content = Swal.getContent()
       if (content) {

@@ -70,6 +70,9 @@ Route::prefix("admin")->group(function() {
     Route::view("/list","admin.adminList");
     Route::view("/RegAdmin","admin.regAdmin");
     Route::post("/addNewAdmin","AdminController@adminReg");
+
+    //Admin Transaksi
+    Route::view("/ListTransaksi","admin.transaksi");
 });
 
 

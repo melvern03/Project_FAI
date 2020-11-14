@@ -83,18 +83,11 @@ class cartcontroler extends Controller
         }else{
             $tempId = $tempId."_".$countData;
         }
+        $total = Session::get('harga');
         $namafile = "Bukti/".$tempId.".".$cekextensi;
         $file = $req->file('fotocek');
         $file->move("Bukti",$namafile);
-        DB::table('h_jual')->insert(
-            [
-                'id_hjual' => $tempId,
-                'tgl_jual' => Carbon::now(),
-                'id_user' => DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('id_user'),
-                'status' => 0,
-                'gambar' => $namafile
-            ]
-        );
+
         $data = Session::get('cart');
 
         foreach($data as $key => $item){
@@ -111,9 +104,21 @@ class cartcontroler extends Controller
                             'subtotal' => $subtotal
                         ]
                     );
+                    $total += $subtotal;
                 }
             }
         }
+
+        DB::table('h_jual')->insert(
+            [
+                'id_hjual' => $tempId,
+                'tgl_jual' => Carbon::now(),
+                'grand_total'=>$total,
+                'id_user' => DB::table('user')->where('id_user',Auth::User()->id_user)->value('id_user'),
+                'status' => 0,
+                'gambar' => $namafile
+            ]
+        );
 
         $body = " <table class='table'>
         <thead class='thead-dark'>
@@ -129,9 +134,8 @@ class cartcontroler extends Controller
         </tbody>
       </table>";
 
-        $email = DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('email');
+        $email = DB::table('user')->where('id_user',Auth::User()->id_user)->value('email');
         $this->sendEmail($email,"Konfirmasi Pesanan",$body);
-
 
         unset($data[Auth::User()->nama_user]);
         Session::forget('cart');
