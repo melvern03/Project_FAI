@@ -28,7 +28,8 @@ Route::prefix("/")->group(function(){
 
     //Shop
     Route::get('/shop', 'userController@shop')->name('shop');
-    Route::post("/shop/{kategori}","userController@shopCategory");
+    Route::any("/shop/sort","userController@shopSort");
+    Route::any("/shop/{kategori}","userController@shopCategory");
     Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
     Route::get('/addToCart', 'userController@addCart')->name('addCart');
     //End Shop
@@ -44,7 +45,6 @@ Route::prefix("/")->group(function(){
 
     Route::view("/history","HistoryTrans");
     Route::view("/profile","profile");
-
 });
 
 
