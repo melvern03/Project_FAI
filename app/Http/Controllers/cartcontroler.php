@@ -134,8 +134,8 @@ class cartcontroler extends Controller
         <div class='container' style:'background-color:whitesmoke;color: black;border-radius: 5px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         text-align: center;display:block;'>
         <br>
-        <img src='Asset/Logo/Logo_Proyek.png' style='width: 50%;'>
-        <h1 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'>RECIPT SUMMARY</h1>
+        <img src='cid:logo' style='width:150px;height:150px'>
+        <h1 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;' align='center'>RECIPT SUMMARY</h1>
         <div style='background-color:oldlace;color: black;border-radius: 15px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         text-align: center;width: 1000px;height:fit-content;margin-left: 250px;margin-right: 200px;'>
         <br>
@@ -171,12 +171,12 @@ class cartcontroler extends Controller
               background-color: #dddddd;
             }
         </style>
-        <table style='font-family: arial, sans-serif;border-collapse: collapse;  width: 100%;'>
+        <table style='font-family: arial, sans-serif;border-collapse: collapse;  width: 100%;border: 1px solid black'>
           <tr style:'background-color: #dddddd;'>
             <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Nama Baju</th>
-            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>qty</th>
+            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Jumlah</th>
             <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Harga</th>
-            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Total</th>
+            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Sub Total</th>
           </tr>
            ";
         $subtotal = 0;
@@ -185,7 +185,7 @@ class cartcontroler extends Controller
             if($key==Auth::User()->nama_user){
                 foreach ($item as $databaju) {
                     $body = $body.
-                    "<tr>"."<td>".DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU')."</td>".
+                    "<tr style='border:1px solid black'>"."<td>".DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU')."</td>".
                     "<td>".$databaju['qty']."</td>"."<td>".DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga')."</td>".
                     "<td>".$databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga')."</td> </tr>";
                     $subtotal += ($databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'));
@@ -209,9 +209,9 @@ class cartcontroler extends Controller
         $body = $body."
         </table>
         <br>
-        <h4>Total : ".$subtotal."</h4>
-        <h4>biaya kirim : ".$kurir."</h4>
-        <h2>Grand Total : ".$totalsemua."</h2>
+        <h4>Sub Total :Rp. ".number_format($subtotal,0,',','.')."</h4>
+        <h4>biaya kirim :Rp. ".number_format($kurir,0,',','.')."</h4>
+        <h2>Grand Total :Rp. ".number_format($totalsemua,0,',','.')."</h2>
         <hr>
         <br>
         <h6>Semua pembelian yang sudah dibayarkan tidak dapat ditukarkan kembali <br>

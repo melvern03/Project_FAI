@@ -110,9 +110,38 @@
         $(document).on('click', '.tambahCart', function (e) {
             var id = $(this).val();
             var idDbaju = $('#dBaju'+id).val();
-            $.get('{{ url("/addToCart") }}',{idDbaju : idDbaju, idHbaju : id}, function(response) {
-                alert("Berhasil Menambah barang ke cart");
-            });
+            if("{!! Auth::check() !!}"){
+                $.get('{{ url("/addToCart") }}',{idDbaju : idDbaju, idHbaju : id}, function(response) {
+                    let timerInterval
+                    Swal.fire({
+                        icon:"success",
+                        title: 'Success',
+                        html: 'Berhasil menambahkan barang ke cart',
+                        timer: 1500,
+                        willOpen: () => {
+                            timerInterval = setInterval(() => {
+                                const content = Swal.getContent()
+                                if (content) {
+                                    const b = content.querySelector('b')
+                                    if (b) {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }
+                                }
+                            }, 100)
+                        },
+                        onClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {})
+                });
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'failed',
+                    text: 'Silahkan Login terlebih dahulu untuk membeli'
+                })
+            }
+
         });
     });
     </script>

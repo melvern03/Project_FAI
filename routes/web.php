@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::middleware(["CheckAdmin"])->group(function(){
     Route::prefix("/")->group(function(){
         // User
@@ -28,10 +29,17 @@ Route::middleware(["CheckAdmin"])->group(function(){
 
         //Shop
         Route::get('/shop', 'userController@shop')->name('shop');
-        Route::post("/shop/{kategori}","userController@shopCategory");
-        Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
+        Route::any("/shop/sort","userController@shopSort");
+        Route::any("/shop/{kategori}","userController@shopCategory");
+        Route::any("/shop/{kategori}/sort","userController@shopCategorySort");
         Route::get('/addToCart', 'userController@addCart')->name('addCart');
         //End Shop
+
+        //Detail
+        Route::view('/detail','detail');
+        Route::any('/detail/{hbaju}','userController@detail');
+        Route::any('/detail/{hbaju}/{dbaju}','userController@detailItem');
+        //EndDetail
 
         //Transaksi
         Route::view('/cart', 'Cart');
@@ -43,7 +51,8 @@ Route::middleware(["CheckAdmin"])->group(function(){
         Route::get("/cek","userController@cekSession");
 
         Route::view("/History","HistoryTrans");
-        Route::view("/MyProfile","profile");
+        Route::get("/profile","userController@showProfile");
+        Route::post("/profile/{data}","userController@profileChange");
         Route::post("/uploadNewFile","MainController@addNewFile");
 
     });

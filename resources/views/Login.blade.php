@@ -57,4 +57,14 @@ Log In
         })
       </script>
   @endif
+  @if (Session("success"))
+  <script>
+      Swal.fire({
+          icon: 'success',
+          title: '{!!Session("success")!!}',
+          showConfirmButton: false,
+          timer: 1500
+      })
+  </script>
+  @endif
 @endsection

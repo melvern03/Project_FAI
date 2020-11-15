@@ -19,8 +19,7 @@ class CheckAdmin
         if(Auth::check()){
             if(Auth::user()->jabatan=="Admin" || Auth::user()->jabatan=="Owner"){
                 Auth::logout();
-            }
-            if(Auth::user()->status=="Verifikasi"){
+            }else if(Auth::user()->status=="Verifikasi"){
                 return redirect("/verifikasi")->with("verif","ok");
             }
         }
