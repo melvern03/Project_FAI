@@ -107,11 +107,17 @@ class userController extends Controller
     public function detailItem(Request $req, $namaHbaju, $idDbaju){
         $check = DB::table('h_baju')->where('NAMA_BAJU',$namaHbaju)->count();
         $checkDbaju = DB::table('d_baju')->where('id_dbaju',$idDbaju)->count();
+        if($checkDbaju == 0){
+            $idDbaju = $req->selectVarition;
+            return redirect('/detail/'.$namaHbaju.'/'.$idDbaju);
+        }
         if($check == 1 && $checkDbaju == 1){
             $idHbaju = DB::table('h_baju')->where('NAMA_BAJU',$namaHbaju)->pluck('ID_HBAJU');
             $barang['Dbaju'] = DB::table('d_baju')->where('id_dbaju',$idDbaju)->get();
+            $barang['allDbaju'] = DB::table('d_baju')->where('ID_HBAJU',$idHbaju)->get();
             $barang['Hbaju'] = DB::table('h_baju')->where('ID_HBAJU', $idHbaju)->get();
-            return view('detail');
+            $barang['kategori'] = DB::table('kategori')->where('ID_KATEGORI',$barang['Dbaju'][0]->ID_KATEGORI)->get();
+            return view('detail')->with($barang);
         }else{
             return redirect('shop');
         }
