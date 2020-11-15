@@ -55,7 +55,7 @@
                 <hr>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link actived" href="#">
+                        <a class="nav-link actived" href="/admin/listUsers">
                             <span data-feather="file"></span>
                             Users
                         </a>

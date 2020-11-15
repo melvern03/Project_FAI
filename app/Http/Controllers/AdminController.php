@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Variant;
 use Illuminate\Http\Request;
 use App\Model\Users;
+use App\Model\h_transaksi;
+use App\Model\d_jual;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
@@ -36,10 +38,16 @@ class AdminController extends Controller
                 if(Auth::user()->jabatan == "Owner" || Auth::user()->jabatan == "Admin"){
                     Users::where('username',Auth::user()->username)->update(['Last_Login'=>Carbon::now()]);
                     return \redirect("/admin/home")->with("success", "Selamat Datang!");
-
+                }else{
+                    Auth::logout();
+                    return redirect("/");
                 }
+            }else if(Auth::user()->status=="Disabled"){
+                Auth::logout();
+                return redirect("/admin")->with("gagal","failed");
             }
         }
+        return redirect("/admin")->with("errors","ok");
     }
 
     function adminReg(Request $req){
@@ -95,6 +103,7 @@ class AdminController extends Controller
         return redirect("/admin/list")->with('SuccessAdd',"Berhasil");
     }
 
+    // Baju Function
     function addBaju(Request $req){
         $validate = $req->validate(
             [
@@ -205,5 +214,63 @@ class AdminController extends Controller
         }else{
             return redirect("/admin/home")->with("errors","kosong");
         }
+    }
+    //End Baju Function
+
+    // Transaksi Function
+    function ProcessOrder(Request $req){
+        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"1"]);
+        return "Success";
+    }
+
+    function getDataJual(Request $req){
+        $data = [];
+        foreach (d_jual::where('id_hjual',$req->id)->get() as $key => $value) {
+            $Newdata = [
+                "nama_baju"=> DB::table('d_baju')->where('id_dbaju',$value['id_barang'])->value('NAMA_BAJU'),
+                "jumlah"=>$value['qty'],
+                "harga"=>$value["harga"],
+                "subtotal"=>$value['subtotal']
+            ];
+            $data[] = $Newdata;
+        }
+        return json_encode($data);
+    }
+
+    function InvalidPayment(Request $req){
+        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"3"]);
+        return "Success";
+    }
+
+    function FinishOrder(Request $req){
+        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"2"]);
+        return "Success";
+    }
+    //End Transaksi Function
+
+    //Function Admin List
+    function DeleteAdmin(Request $req){
+        Users::where("id_user",$req->id)->delete();
+        return "Success";
+    }
+
+    function AdminStatus(Request $req){
+        if($req->type == "enable"){
+            Users::where("id_user",$req->id)->update(["status"=>"Aktif"]);
+        }else if($req->type =="Disable"){
+            Users::where("id_user",$req->id)->update(["status"=>"Disabled"]);
+        }
+        return "Success";
+    }
+    //End Function Admin List
+
+    //Function User
+    function UserStatus(Request $req){
+        if($req->type == "unblacklist"){
+            Users::where("id_user",$req->id)->update(["status"=>"Aktif"]);
+        }else if($req->type =="blacklist"){
+            Users::where("id_user",$req->id)->update(["status"=>"Blacklist"]);
+        }
+        return "Success";
     }
 }

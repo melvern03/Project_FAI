@@ -49,4 +49,12 @@ Log In
           <br>
           <br>
   </div>
+  @if (Session("blacklisted"))
+      <script>
+        Swal.fire({
+            icon: 'error',
+            text: 'Akun anda telah di blacklist'
+        })
+      </script>
+  @endif
 @endsection

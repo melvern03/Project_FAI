@@ -20,6 +20,9 @@
 
     {{-- Sweet Alert --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    {{-- Canvas Js --}}
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <title>@yield('Title')</title>
   </head>
   <body>

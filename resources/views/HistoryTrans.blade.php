@@ -1,7 +1,7 @@
 @extends('Template')
 
 @section('Title')
-History Page
+History
 @endsection
 
 @section('Content')

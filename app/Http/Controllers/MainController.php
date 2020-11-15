@@ -55,6 +55,9 @@ class MainController extends Controller
                 }
             }else if(Auth::user()->status == "Verifikasi"){
                 return redirect("/verifikasi");
+            }else if(Auth::user()->status == "Blacklist"){
+                Auth::logout();
+                return redirect("/login")->with("blacklisted","sorry");
             }
         } else {
             return \redirect()->back()->with("error", "User tidak ditemukan!");
