@@ -42,8 +42,9 @@ Route::middleware(["CheckAdmin"])->group(function(){
         //End Transaksi
         Route::get("/cek","userController@cekSession");
 
-        Route::view("/history","HistoryTrans");
-        Route::view("/profile","profile");
+        Route::view("/History","HistoryTrans");
+        Route::view("/MyProfile","profile");
+        Route::post("/uploadNewFile","MainController@addNewFile");
 
     });
 });

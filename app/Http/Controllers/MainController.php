@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\h_transaksi;
 use Illuminate\Http\Request;
 use App\Model\Users;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -167,5 +169,16 @@ class MainController extends Controller
                 "status"=>0
             ]);
         return redirect("/register");
+    }
+
+    function addNewFile(Request $req){
+        if(glob("Bukti/".$req->idTrans.".*")){
+            $file = h_transaksi::where('id_hjual',$req->idTrans)->value('gambar');
+            File::delete($file);
+            $extension = $req->file("newTransfer")->extension();
+            $req->file("newTransfer")->move(public_path("/Bukti"),$req->idTrans.".".$extension);
+            h_transaksi::where('id_hjual',$req->idTrans)->update(["status"=>"0","gambar"=>"Bukti/".$req->idTrans.".".$extension]);
+        }
+        return redirect("/History")->with("succes","upload");
     }
 }
