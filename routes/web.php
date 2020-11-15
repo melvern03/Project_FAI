@@ -50,7 +50,7 @@ Route::prefix("/")->group(function(){
     Route::get("/cek","userController@cekSession");
 
     Route::view("/history","HistoryTrans");
-    Route::view("/profile","profile");
+    Route::get("/profile","userController@showProfile");
 });
 
 

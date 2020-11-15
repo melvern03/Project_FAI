@@ -28,9 +28,22 @@ class userController extends Controller
                                                                           'qty' => 1);
             }
             Session::put('cart', $cart);
+            return 'sukses';
+        }else{
+            return 'error';
         }
 
     }
+
+    public function showProfile(){
+        if (Auth::check()){
+            $profile['user'] = DB::table('user')->where('id_user',Auth::user()->id_user)->get();
+            return view('profile')->with($profile);
+        }else{
+            return redirect('/');
+        }
+    }
+
     public function shop(){
         $barang["Hbaju"] = DB::table('h_baju')->get();
         $barang["baju"] = DB::table('d_baju')->get();
