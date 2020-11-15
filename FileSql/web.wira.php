@@ -51,6 +51,7 @@ Route::prefix("/")->group(function(){
 
     Route::view("/history","HistoryTrans");
     Route::get("/profile","userController@showProfile");
+    Route::post("/profile/{data}","userController@profileChange");
 });
 
 
