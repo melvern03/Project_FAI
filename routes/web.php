@@ -30,9 +30,15 @@ Route::prefix("/")->group(function(){
     Route::get('/shop', 'userController@shop')->name('shop');
     Route::any("/shop/sort","userController@shopSort");
     Route::any("/shop/{kategori}","userController@shopCategory");
-    Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
+    Route::any("/shop/{kategori}/sort","userController@shopCategorySort");
     Route::get('/addToCart', 'userController@addCart')->name('addCart');
     //End Shop
+
+    //Detail
+    Route::view('/detail','detail');
+    Route::any('/detail/{hbaju}','userController@detail');
+    Route::any('/detail/{hbaju}/{dbaju}','userController@detailItem');
+    //EndDetail
 
     //Transaksi
     Route::view('/cart', 'Cart');
