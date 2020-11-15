@@ -120,19 +120,125 @@ class cartcontroler extends Controller
             ]
         );
 
-        $body = " <table class='table'>
-        <thead class='thead-dark'>
-          <tr>
-            <th scope='col'>Nama Baju</th>
-            <th scope='col'>qty</th>
-            <th scope='col'>Harga</th>
-            <th scope='col'>Total</th>
-          </tr>
-        </thead>
-        <tbody>
 
-        </tbody>
-      </table>";
+
+        $body = "
+                <!DOCTYPE html>
+        <html lang='en'>
+        <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <title>Document</title>
+        </head>
+        <body>
+        <div class='container' style:'background-color:whitesmoke;color: black;border-radius: 5px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        text-align: center;display:block;'>
+        <br>
+        <img src='Asset/Logo/Logo_Proyek.png' style='width: 50%;'>
+        <h1 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'>RECIPT SUMMARY</h1>
+        <div style='background-color:oldlace;color: black;border-radius: 15px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        text-align: center;width: 1000px;height:fit-content;margin-left: 250px;margin-right: 200px;'>
+        <br>
+        <h3 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'>".Auth::User()->nama_user."</h3>
+        <br>
+        Terima kasih telah melakukan pembelian <br>
+        di Cassy int.Co...
+        <br>
+        <h1 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'>INVOICE :".$tempId."</h1>
+        (Tolong simpan nomor recipt ini untuk anda sendiri)
+        <br>
+        <h4 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;color: lightgray;transform: translateX(-400px);'>Your Order Information</h4>
+        <hr>
+        <br>
+        <h3 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'>Order Id : ".$tempId."</h3>
+        <h3 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'>Order Date :". Carbon::now()." </h3>
+        <h3 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'>Bill To : " .DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('email')."</h3>
+        <h3 style='font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;'><u>Detail Order</u></h3>
+        <style>
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+            }
+
+            tr:nth-child(even) {
+              background-color: #dddddd;
+            }
+        </style>
+        <table style='font-family: arial, sans-serif;border-collapse: collapse;  width: 100%;'>
+          <tr style:'background-color: #dddddd;'>
+            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Nama Baju</th>
+            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>qty</th>
+            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Harga</th>
+            <th style:'border: 1px solid #dddddd;text-align: left; padding: 8px;'>Total</th>
+          </tr>
+           ";
+        $subtotal = 0;
+        foreach ($data as $key => $item)
+        {
+            if($key==Auth::User()->nama_user){
+                foreach ($item as $databaju) {
+                    $body = $body.
+                    "<tr>"."<td>".DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU')."</td>".
+                    "<td>".$databaju['qty']."</td>"."<td>".DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga')."</td>".
+                    "<td>".$databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga')."</td> </tr>";
+                    $subtotal += ($databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'));
+                }
+            }
+        }
+        if (Session::get('kirim')=="GRAB")
+        {
+            $totalsemua = $subtotal+5000;
+            $kurir = 5000;
+        }
+        else if (Session::get('kirim')=="JNE")
+        {
+            $totalsemua = $subtotal+10000;
+            $kurir = 10000;
+        }
+        else{
+            $totalsemua = $subtotal+15000;
+            $kurir = 15000;
+        }
+        $body = $body."
+        </table>
+        <br>
+        <h4>Total : ".$subtotal."</h4>
+        <h4>biaya kirim : ".$kurir."</h4>
+        <h2>Grand Total : ".$totalsemua."</h2>
+        <hr>
+        <br>
+        <h6>Semua pembelian yang sudah dibayarkan tidak dapat ditukarkan kembali <br>
+        maka sebaiknya cek dulu size yang akan dipilih dengan baik.</h6>
+        <br>
+        <hr>
+        <br>
+        <h4>Cassy int Co..
+            <br> jl.Ketintang no 78,Kecamatan Sidotopo, Surabaya ,
+            <br>  Indonesia ,Jawa Timur.
+        </h4>
+        <br><br>
+        </div>
+        <br>
+        <h4>Need help?
+            <br>email : cassy.onlineshopistts@gmail.com <br>
+            No. WA : 08982960838
+        </h4>
+        <br>
+        <h5 style='color: lightgray;'>© 2011-2020 Cassy int Co. <br>
+        in the Indonesia and elsewhere. Other brands and product names are the trademarks <br>
+        of their respective owners.</h5>
+        <br>
+        <br>
+        </div>
+        </body>
+        </html>";
 
         $email = DB::table('user')->where('id_user',Auth::User()->id_user)->value('email');
         $this->sendEmail($email,"Konfirmasi Pesanan",$body);
