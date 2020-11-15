@@ -10,35 +10,49 @@
     {{-- ================================================================================================================================= --}}
     <br>
     <br><br>
-    <form action="" method="post">
-        @csrf
         <div class="container">
             <div class="row">
                 <div class="col-md-6" style="text-align: left">
-                    <img src="{{url('product/baju1.jpg')}}" alt="">
+                    <img src="{{url('baju/'.$Hbaju[0]->gambar)}}" alt="">
                 </div>
                 <div class="col-md-6" style="text-align: left">
                     <img src="{{url('Logo/Logo(no title).png')}}" alt="ada" width="8%">
-                    <h3>Nama Baju</h3>
-                    <span style="font-size: 18pt">Price: </span>
-                    <br>
-                     Pilih warna
-                    <br>
-                    <span style="font-size: 11pt">size International</span>
-                    <br>
-
-                    <select name="ukuran" id="" >
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="XL">XL</option>
-                        <option value="XLL">XLL</option>
-                    </select>
-                    <br><br>
-                    <button class="btn btn-success">Add to cart</button>
+                    <h2>{{$Hbaju[0]->NAMA_BAJU}}</h2>
+                    <h6>{{$Dbaju[0]->NAMA_BAJU}} - {{$kategori[0]->NAMA_KATEGORI}}</h6>
+                    <input id="idDbaju" type="hidden" value="{{$Dbaju[0]->id_dbaju}}">
+                    <div class="d-flex flex-row">
+                        <div id="warna" style="width: 30px; height: 25px; border-style: solid" class="mr-1"></div>
+                        <div id="textWarna"></div>
+                         - {{$Dbaju[0]->UKURAN}}
+                    </div>
+                    <script>
+                        var n_match = ntc.name('<?php echo $Dbaju[0]->WARNA ?>');
+                        n_rgb = n_match[0];
+                        n_name = n_match[1];
+                        $('#textWarna').html(n_name);
+                        $('#warna').css('background-color', n_rgb);
+                    </script>
+                    <span style="font-size: 18pt">Price: {{"Rp " . number_format($Hbaju[0]->harga,0,',','.')}}</span>
+                    <form method="post" action="/detail/{{$Hbaju[0]->NAMA_BAJU}}/{dbaju}" name="variationForm">
+                        @csrf
+                        <select class="form-control mb-3" style="width: 50%" name="selectVarition" onchange="variationForm.submit();">
+                            @foreach ($allDbaju as $item)
+                                <option id="{{$item->id_dbaju}}" value="{{$item->id_dbaju}}">y</option>
+                                <script>
+                                    var n_match = ntc.name('<?php echo $item->WARNA ?>');
+                                    n_rgb = n_match[0];
+                                    n_name = n_match[1];
+                                    n_exactmatch = n_match[2];
+                                    var string = "<?php echo $item->id_dbaju ?>";
+                                    $('#{!!$item->id_dbaju!!}').html("<?php echo $item->UKURAN ?>" + " - " + n_match[1]);
+                                </script>
+                            @endforeach
+                        </select>
+                    </form>
+                    <button value={{$Hbaju[0]->ID_HBAJU}} type="submit" class="btn btn-primary tambahCart mr-1">Add To Cart</button>
                 </div>
             </div>
         </div>
-    </form>
     <br><br>
     <div class="container" style="text-align: center">
         <div class="row">
@@ -84,4 +98,30 @@
     <br><br><br><br><br>
     @include('footer')
 </div>
+
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.tambahCart', function (e) {
+            var id = $(this).val();
+            var idDbaju = $('#idDbaju').val();
+            $.get('{{ url("/addToCart") }}',{idDbaju : idDbaju, idHbaju : id}, function(response) {
+                if (response == 'sukses') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Barang berhasil di tambah',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }else if(response == 'error'){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Harap login terlebih dahulu',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            });
+        });
+    });
+</script>
 @endsection

@@ -28,9 +28,22 @@ class userController extends Controller
                                                                           'qty' => 1);
             }
             Session::put('cart', $cart);
+            return 'sukses';
+        }else{
+            return 'error';
         }
 
     }
+
+    public function showProfile(){
+        if (Auth::check()){
+            $profile['user'] = DB::table('user')->where('id_user',Auth::user()->id_user)->get();
+            return view('profile')->with($profile);
+        }else{
+            return redirect('/');
+        }
+    }
+
     public function shop(){
         $barang["Hbaju"] = DB::table('h_baju')->get();
         $barang["baju"] = DB::table('d_baju')->get();
@@ -73,49 +86,101 @@ class userController extends Controller
         $barang["baju"] = DB::table('d_baju')->get();
         return view("shop")->with($barang);
     }
-    public function shopCategory(Request $req){
+    public function shopCategory(Request $req, $kategori){
         if($req->btnKategori){
+            $idHbaju = array();
             $barang['baju'] = DB::table('d_baju')->where('ID_KATEGORI',$req->btnKategori)->get();
+            $barang['kategori'] = $kategori;
             foreach ($barang['baju'] as $key => $value) {
-                $barang["Hbaju"] = DB::table('h_baju')->where('ID_HBAJU',$value->ID_HBAJU)->get();
+                array_push($idHbaju, $value->ID_HBAJU);
             }
+            $barang["Hbaju"] = DB::table('h_baju')->whereIn('ID_HBAJU',$idHbaju)->get();
             return view('shop')->with($barang);
         }else{
             return redirect("/shop");
         }
-
     }
-    public function shopCategorySort(Request $req, $kategori){
-        if($req->btnSort == 'tertinggi'){
-            $barang["baju"] = DB::table('h_baju as h')
-            ->join('d_baju as d', 'h.ID_HBAJU', '=', 'd.ID_HBAJU')
-            ->select('d.ID_DBAJU as ID_DBAJU', 'h.gambar as gambar', 'h.harga as harga', 'd.NAMA_BAJU as nama', 'd.ukuran as ukuran', 'd.warna as warna')
-            ->where('d.ID_KATEGORI',$kategori)
-            ->orderBy('h.harga', 'desc')
-            ->get();
-        }else if($req->btnSort == 'terendah'){
-            $barang["baju"] = DB::table('h_baju as h')
-            ->join('d_baju as d', 'h.ID_HBAJU', '=', 'd.ID_HBAJU')
-            ->select('d.ID_DBAJU as ID_DBAJU', 'h.gambar as gambar', 'h.harga as harga', 'd.NAMA_BAJU as nama', 'd.ukuran as ukuran', 'd.warna as warna')
-            ->where('d.ID_KATEGORI',$kategori)
-            ->orderBy('h.harga', 'asc')
-            ->get();
-        }else if($req->btnSort == 'terbaru'){
-            $barang["baju"] = DB::table('h_baju as h')
-            ->join('d_baju as d', 'h.ID_HBAJU', '=', 'd.ID_HBAJU')
-            ->select('d.ID_DBAJU as ID_DBAJU', 'h.gambar as gambar', 'h.harga as harga', 'd.NAMA_BAJU as nama', 'd.ukuran as ukuran', 'd.warna as warna')
-            ->where('d.ID_KATEGORI',$kategori)
-            ->orderBy('h.time_added', 'desc')
-            ->get();
-        }else if($req->btnSort == 'terlama'){
-            $barang["baju"] = DB::table('h_baju as h')
-            ->join('d_baju as d', 'h.ID_HBAJU', '=', 'd.ID_HBAJU')
-            ->select('d.ID_DBAJU as ID_DBAJU', 'h.gambar as gambar', 'h.harga as harga', 'd.NAMA_BAJU as nama', 'd.ukuran as ukuran', 'd.warna as warna')
-            ->where('d.ID_KATEGORI',$kategori)
-            ->orderBy('h.time_added', 'asc')
-            ->get();
+
+    public function detail(Request $req, $namaHbaju){
+        $check = DB::table('h_baju')->where('NAMA_BAJU',$namaHbaju)->count();
+        $idHbaju = "";
+        if(isset($req->btnDetail) || $check == 1){
+            $idHbaju = $req->btnDetail;
+            if(isset($req->btnDetail)){
+                $idHbaju = $req->btnDetail;
+            }else{
+                $idHbaju = DB::table('h_baju')->where('NAMA_BAJU',$namaHbaju)->pluck('ID_HBAJU');
+            }
+            $Dbaju = DB::table('d_baju')->where('ID_HBAJU',$idHbaju)->first();
+            return redirect('/detail/'.$namaHbaju.'/'.$Dbaju->id_dbaju);
+        }else{
+            return redirect('shop');
         }
-        return view('shop')->with($barang);
+    }
+    public function detailItem(Request $req, $namaHbaju, $idDbaju){
+        $check = DB::table('h_baju')->where('NAMA_BAJU',$namaHbaju)->count();
+        $checkDbaju = DB::table('d_baju')->where('id_dbaju',$idDbaju)->count();
+        if($checkDbaju == 0){
+            $idDbaju = $req->selectVarition;
+            return redirect('/detail/'.$namaHbaju.'/'.$idDbaju);
+        }
+        if($check == 1 && $checkDbaju == 1){
+            $idHbaju = DB::table('h_baju')->where('NAMA_BAJU',$namaHbaju)->pluck('ID_HBAJU');
+            $barang['Dbaju'] = DB::table('d_baju')->where('id_dbaju',$idDbaju)->get();
+            $barang['allDbaju'] = DB::table('d_baju')->where('ID_HBAJU',$idHbaju)->get();
+            $barang['Hbaju'] = DB::table('h_baju')->where('ID_HBAJU', $idHbaju)->get();
+            $barang['kategori'] = DB::table('kategori')->where('ID_KATEGORI',$barang['Dbaju'][0]->ID_KATEGORI)->get();
+            return view('detail')->with($barang);
+        }else{
+            return redirect('shop');
+        }
+    }
+
+    public function shopCategorySort(Request $req, $kategori){
+        $idKategori = DB::table('kategori')->where('NAMA_KATEGORI',$kategori)->pluck('ID_KATEGORI');
+        $idHbaju = array();
+        $barang['baju'] = DB::table('d_baju')->where('ID_KATEGORI',$idKategori[0])->get();
+        $barang['kategori'] = $kategori;
+
+        if($req->btnSort == 'tertinggi'){
+            foreach ($barang['baju'] as $key => $value) {
+                array_push($idHbaju, $value->ID_HBAJU);
+            }
+            $barang["Hbaju"] = DB::table('h_baju')
+                                ->whereIn('ID_HBAJU',$idHbaju)
+                                ->orderBy('harga', 'desc')
+                                ->get();
+                                return view('shop')->with($barang);
+        }else if($req->btnSort == 'terendah'){
+            foreach ($barang['baju'] as $key => $value) {
+                array_push($idHbaju, $value->ID_HBAJU);
+            }
+            $barang["Hbaju"] = DB::table('h_baju')
+                                ->whereIn('ID_HBAJU',$idHbaju)
+                                ->orderBy('harga', 'asc')
+                                ->get();
+                                return view('shop')->with($barang);
+        }else if($req->btnSort == 'terbaru'){
+            foreach ($barang['baju'] as $key => $value) {
+                array_push($idHbaju, $value->ID_HBAJU);
+            }
+            $barang["Hbaju"] = DB::table('h_baju')
+                                ->whereIn('ID_HBAJU',$idHbaju)
+                                ->orderBy('time_added', 'desc')
+                                ->get();
+                                return view('shop')->with($barang);
+        }else if($req->btnSort == 'terlama'){
+            foreach ($barang['baju'] as $key => $value) {
+                array_push($idHbaju, $value->ID_HBAJU);
+            }
+            $barang["Hbaju"] = DB::table('h_baju')
+                                ->whereIn('ID_HBAJU',$idHbaju)
+                                ->orderBy('time_added', 'asc')
+                                ->get();
+                                return view('shop')->with($barang);
+        }else{
+            return redirect("/shop");
+        }
     }
     public function cekSession(){
         // Session::forget('cart');
