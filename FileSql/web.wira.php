@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+Use App\Model\h_transaksi;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,48 +15,39 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware(["CheckAdmin"])->group(function(){
+    Route::prefix("/")->group(function(){
+        // User
+        Route::get("/","userController@home");
+        Route::view("/aboutUs","AboutUs");
+        Route::view('/aboutUsPage', 'AboutUs');
+        Route::view("/cart","cart");
+        Route::view('/login', 'Login');
+        Route::view('/register', 'Register');
+        //End User
 
-Route::prefix("/")->group(function(){
-    // User
-    Route::get("/","userController@home");
-    Route::view("/aboutUs","AboutUs");
-    Route::view('/aboutUsPage', 'AboutUs');
-    Route::view("/verifikasi","verifikasi");
-    Route::post("/verifikasiData","MainController@verifikasi");
-    Route::view("/cart","cart");
-    Route::view('/login', 'Login');
-    Route::view('/register', 'Register');
-    //End User
+        //Shop
+        Route::get('/shop', 'userController@shop')->name('shop');
+        Route::post("/shop/{kategori}","userController@shopCategory");
+        Route::post("/shop/sortBy/{kategori}","userController@shopCategorySort");
+        Route::get('/addToCart', 'userController@addCart')->name('addCart');
+        //End Shop
 
-    //Shop
-    Route::get('/shop', 'userController@shop')->name('shop');
-    Route::any("/shop/sort","userController@shopSort");
-    Route::any("/shop/{kategori}","userController@shopCategory");
-    Route::any("/shop/{kategori}/sort","userController@shopCategorySort");
-    Route::get('/addToCart', 'userController@addCart')->name('addCart');
-    //End Shop
+        //Transaksi
+        Route::view('/cart', 'Cart');
+        Route::get('/hapus/{id}','cartcontroler@hapuscart');
+        Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
+        Route::post('/checkout','cartcontroler@checkout');
+        Route::view('/trans', 'Track');
+        //End Transaksi
+        Route::get("/cek","userController@cekSession");
 
-    //Detail
-    Route::view('/detail','detail');
-    Route::any('/detail/{hbaju}','userController@detail');
-    Route::any('/detail/{hbaju}/{dbaju}','userController@detailItem');
-    //EndDetail
+        Route::view("/History","HistoryTrans");
+        Route::view("/MyProfile","profile");
+        Route::post("/uploadNewFile","MainController@addNewFile");
 
-    //Transaksi
-    Route::view('/cart', 'Cart');
-    Route::get('/hapus/{id}','cartcontroler@hapuscart');
-    Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
-    Route::post('/checkout','cartcontroler@checkout');
-    Route::view('/trans', 'Track');
-    //End Transaksi
-    Route::get("/cek","userController@cekSession");
-
-    Route::view("/history","HistoryTrans");
-    Route::get("/profile","userController@showProfile");
+    });
 });
-
-
-
 
 Route::prefix("admin")->group(function() {
 
@@ -73,12 +66,26 @@ Route::prefix("admin")->group(function() {
     Route::post("/home/addMoreVariant","AdminController@addMoreVariant");
     // end Model & Variant
 
+    //Admin List & Reg
     Route::view("/list","admin.adminList");
     Route::view("/RegAdmin","admin.regAdmin");
     Route::post("/addNewAdmin","AdminController@adminReg");
+    Route::get("/DeleteAdmin","AdminController@DeleteAdmin");
+    Route::get("/ChangeStatus","AdminController@AdminStatus");
+    //End Admin List & reg
 
     //Admin Transaksi
     Route::view("/ListTransaksi","admin.transaksi");
+    Route::get("/ListTransaksi/ProcessOrder","AdminController@ProcessOrder");
+    Route::get("/ListTransaksi/getDetail","AdminController@getDataJual");
+    Route::view("/ListTransaski/History","admin.listDone");
+    Route::get("/ListTransaksi/InvalidPayment","AdminController@InvalidPayment");
+    Route::get("/ListTransaksi/FinishOrder","AdminController@FinishOrder");
+    //End Admin Transaksi
+
+    // Function Users
+    Route::view("/listUsers","admin.listUsers");
+    Route::get("/listUsers/statusChange","AdminController@UserStatus");
 });
 
 
@@ -88,3 +95,9 @@ Route::post("/logCheck","MainController@logCheck");
 Route::post("/logAdmin","AdminController@adminLog");
 Route::get("/logAuth","MainController@logout");
 Route::get("/logAuthAdmin","AdminController@logAdmin");
+
+//Verifikasi without middleware
+Route::view("/verifikasi","verifikasi");
+Route::post("/verifikasiData","MainController@verifikasi");
+
+Route::view("/getTimeStamp","admin.testChart");

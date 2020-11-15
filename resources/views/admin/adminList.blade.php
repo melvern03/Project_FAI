@@ -46,11 +46,11 @@
                     <td>{{$item->alamat}}</td>
                     <td>{{$item->no_telp}}</td>
                     <td>
-                        <button class='btn btn-danger'>Delete</button>
+                        <button class='btn btn-danger deleteAdmin' value="{{$item->id_user}}" temp="{{$item->nama_user}}">Delete</button>
                         @if ($item->status == "Aktif")
-                            <button class="btn btn-secondary">Disable Account</button>
+                            <button class="btn btn-secondary disableAdmin" value="{{$item->id_user}}" temp="{{$item->nama_user}}">Disable Account</button>
                         @else
-                            <button class="btn btn-primary">Enable Account</button>
+                            <button class="btn btn-primary enableAdmin" value="{{$item->id_user}}" temp="{{$item->nama_user}}">Enable Account</button>
                         @endif
                     </td>
                 </tr>
@@ -61,6 +61,88 @@
 <script>
     $(document).ready(function(){
         $("#listAdmin").DataTable();
+        $(document).on('click','.deleteAdmin',function(e){
+            var id = $(this).val();
+            var namaAdmin = $(this).attr("temp");
+            Swal.fire({
+                title: 'Apakah anda yakin ingin menghapus '+namaAdmin+'?',
+                showDenyButton: true,
+                confirmButtonText: `Yes`,
+                denyButtonText: `No`,
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $.get('{{ url("admin/DeleteAdmin") }}',{id : id}, function(response) {
+                        if(response == "Success"){
+                            Swal.fire({
+                                text: "Admin Berhasil di hapus",
+                                icon: 'success',
+                                }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            })
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+        });
+        $(document).on('click','.disableAdmin',function(e){
+            var id = $(this).val();
+            var namaAdmin = $(this).attr("temp");
+            Swal.fire({
+                title: 'Apakah anda yakin ingin disable '+namaAdmin+'?',
+                showDenyButton: true,
+                confirmButtonText: `Yes`,
+                denyButtonText: `No`,
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $.get('{{ url("admin/ChangeStatus") }}',{id : id,type:"Disable"}, function(response) {
+                        if(response == "Success"){
+                            Swal.fire({
+                                text: "Status Admin Berhasil Diganti",
+                                icon: 'success',
+                                }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            })
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+        });
+
+        $(document).on('click','.enableAdmin',function(e){
+            var id = $(this).val();
+            var namaAdmin = $(this).attr("temp");
+            Swal.fire({
+                title: 'Apakah anda yakin ingin enable '+namaAdmin+'?',
+                showDenyButton: true,
+                confirmButtonText: `Yes`,
+                denyButtonText: `No`,
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $.get('{{ url("admin/ChangeStatus") }}',{id : id, type:"enable"}, function(response) {
+                        if(response == "Success"){
+                            Swal.fire({
+                                text: "Status Admin Berhasil Diganti",
+                                icon: 'success',
+                                }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            })
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+        });
     });
 </script>
 @endsection

@@ -4,6 +4,14 @@
 @endsection
 
 @section('Content')
+@if (Session("verif"))
+    <script>
+    Swal.fire({
+        icon: 'info',
+        text: 'Silahkan melakukan verifikasi terlebih dahulu !'
+    })
+    </script>
+@endif
 <body class="bg-dark">
     <div class="toast" id="myToast" style="top: 0;right:0;margin:10px">
         <div class="toast-header">
@@ -46,8 +54,11 @@
     </script>
     @if (Session("errors"))
     <script>
-        document.getElementById("welcomeBody").innerHTML = "Code Tidak Valid Silahkan cek email anda lagi";
-        notif();
+        Swal.fire({
+            icon: 'error',
+            title: 'Code Invalid',
+            text: 'Silahkan Cek Kembali Email anda'
+        })
     </script>
     @endif
     @if ($errors->any())
