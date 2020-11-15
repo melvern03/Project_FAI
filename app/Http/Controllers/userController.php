@@ -136,6 +136,43 @@ class userController extends Controller
         }
     }
 
+    public function profileChange(Request $req, $data){
+        if($data == 'nama_user'){
+            DB::table('user')
+            ->where('id_user',Auth::user()->id_user)
+            ->update(['nama_user'=>$req->namaUser]);
+            return redirect('/profile')->with('success','Nama berhasil di ubah');
+        }else if($data == 'alamat'){
+            DB::table('user')
+            ->where('id_user',Auth::user()->id_user)
+            ->update(['alamat'=>$req->alamatUser]);
+            return redirect('/profile')->with('success','Alamat berhasil di ubah');
+        }else if($data == 'no_telp'){
+            DB::table('user')
+            ->where('id_user',Auth::user()->id_user)
+            ->update(['no_telp'=>$req->telpUser]);
+            return redirect('/profile')->with('success','Nomor telefon berhasil di ubah');
+        }else if($data == 'password'){
+            $password = DB::table('user')->where('id_user',Auth::user()->id_user)->get();
+            if(password_verify($req->oldPass, $password[0]->password)){
+                if($req->newPass == $req->cPass){
+                    $pass = password_hash($req->newPass, \PASSWORD_DEFAULT);
+                    DB::table('user')
+                    ->where('id_user',Auth::user()->id_user)
+                    ->update(['password'=>$pass]);
+                    Auth::logout();
+                    return redirect("/login")->with('success','Password berhasil di ubah');
+                }else{
+                    return redirect('/profile')->with('err','Konfirmasi password berbeda');
+                }
+            }else{
+                return redirect('/profile')->with('err','Password lama berbeda dengan data kami');
+            }
+        }else{
+            return redirect('/profile')->with('err','Terjadi kesalahan dalam perubahan data');
+        }
+    }
+
     public function shopCategorySort(Request $req, $kategori){
         $idKategori = DB::table('kategori')->where('NAMA_KATEGORI',$kategori)->pluck('ID_KATEGORI');
         $idHbaju = array();
