@@ -100,6 +100,9 @@
     {{-- ================================================================================================================================= --}}
 
     {{-- Review Section --}}
+
+
+    @if (Auth::check())
     @if (Review::where('id_user',Auth::user()->id_user)->where('id_hbaju',$Hbaju[0]->ID_HBAJU)->count()>0)
     <br>
     <h2>Your Review</h2>
@@ -130,7 +133,6 @@
     </div>
     @endif
     <br>
-
     @if (Review::where('id_user',"!=",Auth::user()->id_user)->where('id_hbaju',$Hbaju[0]->ID_HBAJU)->count()>0)
         <h3>Reviews</h3>
         <div id="reviewOrang" class="carousel slide" data-ride="carousel">
@@ -158,6 +160,34 @@
           </div>
         </div>
     @endif
+    @else
+    <h3>Reviews</h3>
+    <div id="reviewOrang" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            @foreach (Review::orderBy('id','desc')->where('status_pesan','1')->where('id_hbaju',$Hbaju[0]->ID_HBAJU)->take(10)->get() as $key => $item)
+            <div class="carousel-item {{$key == 0 ? 'active' : '' }} bg-dark">
+                <div class='text-white'>
+                    <img src="{{url('/AssetReview/star'.$item->rating.'.png')}}" style="width: 25%;">
+                    <p>By : {{Users::where('id_user',$item->id_user)->value('nama_user')}}<br>
+                    Nama Variant : {{DB::table('d_baju')->where('id_dbaju',$item->id_baju)->value("NAMA_BAJU")}}<br>
+                    {{$item->pesan}}</p>
+                    <br>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        <a class="carousel-control-prev" href="#reviewOrang" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#reviewOrang" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+    @endif
+
 
     {{-- End Review Section --}}
 

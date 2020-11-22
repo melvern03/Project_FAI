@@ -219,8 +219,30 @@ class AdminController extends Controller
 
     // Transaksi Function
     function ProcessOrder(Request $req){
-        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"1"]);
-        return "Success";
+        $cek = true;
+        foreach (d_jual::where('id_hjual',$req->id)->get() as $item) {
+            if($item->qty > DB::table('d_baju')->where('id_dbaju',$item->id_barang)->value("STOK")){
+                $cek = false;
+            }
+        }
+        if($cek){
+            $body = "<h1 align='center'>Order In Process</h1>
+            <h2 align='center'> Order ID  : ".$req->id."</h2>
+            <p align='center' style='font-size:16pt'>Order anda sedang di process dan akan dikirim apabila sudah siap</p>";
+            $to = Users::where('id_user',h_transaksi::where('id_hjual',$req->id)->value('id_user'))->value('email');
+            if($this->sendEmail($to,"Order In Process",$body) == "sent"){
+                h_transaksi::where("id_hjual",$req->id)->update(["status"=>"1"]);
+                foreach (d_jual::where('id_hjual',$req->id)->get() as $item) {
+                    $newStock = DB::table('d_baju')->where('id_dbaju',$item->id_barang)->value('STOK') - $item->qty;
+                    DB::table('d_baju')->where('id_dbaju',$item->id_barang)->update(["STOK"=>$newStock]);
+                }
+                return "Success";
+            }else{
+                return "email";
+            }
+
+        }
+        return "Stock";
     }
 
     function getDataJual(Request $req){
@@ -238,13 +260,29 @@ class AdminController extends Controller
     }
 
     function InvalidPayment(Request $req){
-        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"3"]);
-        return "Success";
+        $body = "<h1 align='center'>Payment invalid</h1>
+        <h2 align='center'> Order ID  : ".$req->id."</h2>
+        <p align='center' style='font-size:14pt'>Pembayaran anda tidak valid, berikut merupakan bukti pembayaran yang anda kirim<br>Silahkan mengupload kembali bukti transfer yang baru di halaman history transaksi anda <br>Terima Kasih</p>";
+        $to = Users::where('id_user',h_transaksi::where('id_hjual',$req->id)->value('id_user'))->value('email');
+        $foto = h_transaksi::where('id_hjual',$req->id)->value('gambar');
+        if($this->invalidEmail($to,"Invalid Payment",$body,$foto) == "sent"){
+            h_transaksi::where("id_hjual",$req->id)->update(["status"=>"3"]);
+            return "Success";
+        }
+
+        return "gagal";
     }
 
     function FinishOrder(Request $req){
-        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"4"]);
-        return "Success";
+        $body = "<h1 align='center'>Order Sedang Dikirim</h1>
+        <h2 align='center'> Order ID  : ".$req->id."</h2>
+        <p align='center' style='font-size:14pt'>Order anda sedang kami kirim<br>apabila barang sudah tiba mohon untuk konfirmasi melalui halaman history transaksi<br>Terima kasih</p>";
+        $to = Users::where('id_user',h_transaksi::where('id_hjual',$req->id)->value('id_user'))->value('email');
+        if($this->sendEmail($to,"Order Sent",$body)){
+            h_transaksi::where("id_hjual",$req->id)->update(["status"=>"4"]);
+            return "Success";
+        }
+        return "gagal";
     }
     //End Transaksi Function
 
@@ -272,5 +310,63 @@ class AdminController extends Controller
             Users::where("id_user",$req->id)->update(["status"=>"Blacklist"]);
         }
         return "Success";
+    }
+    //End Function User
+
+    //Email
+    function sendEmail($to, $subject, $body) {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();                                            // Send using SMTP
+            $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through smtp.gmail.com:587 => port
+            $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+            $mail->Username   = 'cassy.onlineshopistts@gmail.com';                     // SMTP username
+            $mail->Password   = 'onlineshop123';                               // SMTP password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+            $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+            // Recipients
+            $mail->setFrom('cassy.onlineshopistts@gmail.com', 'Cassy');
+            $mail->addAddress($to, 'User');     // Add a recipient
+
+            // Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            //$mail->AddEmbeddedImage($url,'logo');
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+
+            $mail->send();
+            return "sent";
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+    }
+
+    function invalidEmail($to, $subject, $body,$img){
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();                                            // Send using SMTP
+            $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through smtp.gmail.com:587 => port
+            $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+            $mail->Username   = 'cassy.onlineshopistts@gmail.com';                     // SMTP username
+            $mail->Password   = 'onlineshop123';                               // SMTP password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+            $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+            // Recipients
+            $mail->setFrom('cassy.onlineshopistts@gmail.com', 'Cassy');
+            $mail->addAddress($to, 'User');     // Add a recipient
+
+            // Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->AddEmbeddedImage($img,'Bukti Transfer Salah');
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+
+            $mail->send();
+            return "sent";
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
     }
 }

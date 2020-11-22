@@ -79,6 +79,7 @@
                 }).then((result) => {
                 if (result.isConfirmed) {
                     $.get('{{ url("admin/ListTransaksi/ProcessOrder") }}',{id : id}, function(response) {
+                        console.log(response);
                         if(response == "Success"){
                             Swal.fire({
                                 text: "Order Status Change",
@@ -88,6 +89,9 @@
                                     location.reload();
                                 }
                             })
+                        }
+                        else if(response == "Stock"){
+                            Swal.fire('Stock Barang Kurang', '', 'error')
                         }
                     });
                 } else if (result.isDenied) {
@@ -106,6 +110,7 @@
                 }).then((result) => {
                 if (result.isConfirmed) {
                     $.get('{{ url("admin/ListTransaksi/InvalidPayment") }}',{id : id}, function(response) {
+                        alert(response);
                         if(response == "Success"){
                             Swal.fire({
                                 text: "Order Status Change",

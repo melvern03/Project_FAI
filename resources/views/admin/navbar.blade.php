@@ -45,15 +45,6 @@
                     </li>
                 </ul>
                 <hr>
-                {{-- <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link actived" href="/admin/promo">
-                            <span data-feather="file"></span>
-                            Promo
-                        </a>
-                    </li>
-                </ul>
-                <hr> --}}
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link actived" href="/admin/listUsers">

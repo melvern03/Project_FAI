@@ -41,10 +41,15 @@ Route::middleware(["CheckAdmin"])->group(function(){
         Route::any('/detail/{hbaju}/{dbaju}','userController@detailItem');
         //EndDetail
 
+        //Detail Transaksi
+        Route::post("/getDataDetail","userController@getDataDetail");
+        Route::view("/DetailTransaksi","detailTransaksi");
+
         //Review
         Route::post("/getDataForReview","userController@getDataReview");
         Route::view("/Review","Review");
         Route::post("/addReview","userController@addReview");
+        //End Review
 
         //Transaksi
         Route::view('/cart', 'Cart');

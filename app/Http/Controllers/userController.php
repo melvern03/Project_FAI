@@ -242,7 +242,7 @@ class userController extends Controller
     }
 
     public function getDataReview(Request $req){
-        $data = Review::where('id_order',$req->idReview)->get();
+        $data = Review::where('id_order',$req->idReview)->where('status_pesan','0')->get();
         return redirect("/Review")->with("data",$data);
     }
 
@@ -251,6 +251,11 @@ class userController extends Controller
             Review::where('id_order',$req->idOrder[$i])->where("id_baju",$req->idBaju[$i])->where('id_user',Auth::user()->id_user)->update(["pesan"=>$req->reviewOrang[$i], "rating"=>$req->ratingStar[$i], "status_pesan"=>"1", "tanggal_pengaduan"=>Carbon::now()]);
         }
         return redirect("/History")->with('reviewDone',"terimakasih");
+    }
+
+    public function getDataDetail(Request $req){
+        $data = d_jual::where('id_hjual',$req->detailTrans)->get();
+        return redirect("/DetailTransaksi")->with("dataDetail",$data);
     }
 
     public function cekSession(){

@@ -75,7 +75,8 @@ class cartcontroler extends Controller
 
         $cekextensi = $req->file('fotocek')->extension();
         $tempId = "CK";
-        $countData = DB::table('h_jual')->where("id_hjual","like","%".$tempId."%")->count()+1;
+        $temp = explode("_",DB::table('h_jual')->where("id_hjual","like","%".$tempId."%")->max('id_hjual'));
+        $countData = $temp[1]+1;
         if($countData < 10){
             $tempId = $tempId."_00".$countData;
         }else if($countData < 100){
