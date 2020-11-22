@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\resDbaju;
 use App\Http\Resources\resourcesSort;
+use App\Model\d_jual;
+use App\Model\h_transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+
+use App\Model\Review;
+use Carbon\Carbon;
 
 class userController extends Controller
 {
@@ -219,9 +224,36 @@ class userController extends Controller
             return redirect("/shop");
         }
     }
+
+    public function finishOrder(Request $req){
+
+        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"2"]);
+        foreach (d_jual::where('id_hjual',$req->id)->get() as $item) {
+            $newReview = new Review();
+            $newReview->id_user = Auth::user()->id_user;
+            $newReview->id_order = $req->id;
+            $newReview->id_baju = $item->id_barang;
+            $newReview->status_pesan = "0";
+            $newReview->id_hbaju = DB::table('d_baju')->where('id_dbaju',$item->id_barang)->value('ID_HBAJU');
+            $newReview->save();
+        }
+
+        return "success";
+    }
+
+    public function getDataReview(Request $req){
+        $data = Review::where('id_order',$req->idReview)->get();
+        return redirect("/Review")->with("data",$data);
+    }
+
+    public function addReview(Request $req){
+        for ($i=0; $i < count($req->reviewOrang); $i++) {
+            Review::where('id_order',$req->idOrder[$i])->where("id_baju",$req->idBaju[$i])->where('id_user',Auth::user()->id_user)->update(["pesan"=>$req->reviewOrang[$i], "rating"=>$req->ratingStar[$i], "status_pesan"=>"1", "tanggal_pengaduan"=>Carbon::now()]);
+        }
+        return redirect("/History")->with('reviewDone',"terimakasih");
+    }
+
     public function cekSession(){
-        // Session::forget('cart');
-        // Session::forget('barang');
         dd(Session::all());
     }
 }

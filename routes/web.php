@@ -41,11 +41,17 @@ Route::middleware(["CheckAdmin"])->group(function(){
         Route::any('/detail/{hbaju}/{dbaju}','userController@detailItem');
         //EndDetail
 
+        //Review
+        Route::post("/getDataForReview","userController@getDataReview");
+        Route::view("/Review","Review");
+        Route::post("/addReview","userController@addReview");
+
         //Transaksi
         Route::view('/cart', 'Cart');
         Route::get('/hapus/{id}','cartcontroler@hapuscart');
         Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
         Route::post('/checkout','cartcontroler@checkout');
+        Route::get("/OrderFinishUser","userController@finishOrder");
         Route::view('/trans', 'Track');
         //End Transaksi
         Route::get("/cek","userController@cekSession");

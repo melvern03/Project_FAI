@@ -43,7 +43,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">Color :</div>
-                                <div class="col-md-6" ><div class="kotak" style="width: 40px;height: auto ;background-color: {{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('WARNA')}};"><br></div></div>
+                                <div class="col-md-6" ><div class="kotak" style="width: 40px;height: auto ;background-color: {{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('WARNA')}};border:3px solid black"><br></div></div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">Size : </div>
@@ -77,6 +77,7 @@
                         <h4 class="my-0 font-weight-normal">Grab</h4>
                     </div>
                     <div class="card-body">
+                        <img src="{{url('/AssetCart/grab.png')}}" style="height: 150px;width:325px">
                         <h1 class="card-title pricing-card-title">Rp. 5.000</h1>
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>4-5 hours Work days</li>
@@ -91,6 +92,7 @@
                         <h4 class="my-0 font-weight-normal">Jne Express</h4>
                     </div>
                     <div class="card-body">
+                        <img src="{{url('/AssetCart/jne.png')}}" style="height: 150px;width:325px">
                         <h1 class="card-title pricing-card-title">Rp. 10.000</h1>
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>4-5 Shipment Work days</li>
@@ -104,6 +106,7 @@
                         <h4 class="my-0 font-weight-normal">Si Cepat</h4>
                     </div>
                     <div class="card-body">
+                        <img src="{{url('/AssetCart/siCepat.png')}}" style="height: 150px;width:325px">
                         <h1 class="card-title pricing-card-title">Rp. 15.000</h1>
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>1 Shipment Work days</li>

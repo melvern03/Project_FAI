@@ -18,9 +18,6 @@ Register
         </button>
     </div>
     @endif
-    {{-- @if (Session("error"))
-        <h3>User tidak ditemukan</h3>
-    @endif --}}
     <div style="text-align: center;">
         <main role="main" class="container">
             <div class="jumbotron" style="opacity: 77%;margin-top:5%">

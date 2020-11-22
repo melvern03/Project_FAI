@@ -11,7 +11,8 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-user-circle fa-lg"></i> <span style="margin-left: 5px" class="text-white">Welcome {{Auth::user()->nama_user}}</span>
+                <i class="fas fa-user-circle fa-lg"></i> <span style="margin-left: 5px" class="text-white">Welcome
+                    {{Auth::user()->nama_user}}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="/admin/">Logout</a>
@@ -44,7 +45,7 @@
                     </li>
                 </ul>
                 <hr>
-                <ul class="nav flex-column">
+                {{-- <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link actived" href="/admin/promo">
                             <span data-feather="file"></span>
@@ -52,7 +53,7 @@
                         </a>
                     </li>
                 </ul>
-                <hr>
+                <hr> --}}
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link actived" href="/admin/listUsers">

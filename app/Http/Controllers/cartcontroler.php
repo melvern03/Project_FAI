@@ -121,7 +121,6 @@ class cartcontroler extends Controller
         );
 
 
-
         $body = "
                 <!DOCTYPE html>
         <html lang='en'>

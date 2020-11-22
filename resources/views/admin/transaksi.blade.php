@@ -36,6 +36,8 @@
                         <td class="bg-success text-white">Order In Process</td>
                     @elseif($item->status == "3")
                         <td class="bg-warning">Menunggu Bukti Transfer Baru</td>
+                    @elseif($item->status == "4")
+                        <td class="bg-info text-white">Order Sent To Customer</td>
                     @endif
                     <td align="center">
                         <button class="btn btn-success showDetail" value='{{$item->id_hjual}}' ongkir='{{$item->grand_total - d_jual::where('id_hjual',$item->id_hjual)->sum('subtotal')}}'>Show Detail</button>
@@ -44,7 +46,7 @@
                             <button class='btn btn-primary processOrder' value='{{$item->id_hjual}}'>Process Order</button>
                             <button class="btn btn-danger invalidPayment" value='{{$item->id_hjual}}'>Payment Invalid</button>
                         @elseif($item->status == "1")
-                            <button class="btn btn-primary finishOrder" value='{{$item->id_hjual}}'>Finish Order</button>
+                            <button class="btn btn-primary finishOrder" value='{{$item->id_hjual}}'>Send Order</button>
                         @endif
                     </td>
                 </tr>

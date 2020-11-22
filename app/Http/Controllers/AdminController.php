@@ -243,7 +243,7 @@ class AdminController extends Controller
     }
 
     function FinishOrder(Request $req){
-        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"2"]);
+        h_transaksi::where("id_hjual",$req->id)->update(["status"=>"4"]);
         return "Success";
     }
     //End Transaksi Function
