@@ -68,6 +68,7 @@ Route::middleware(["CheckAdmin"])->group(function(){
 
     });
 });
+Route::middleware(["CheckUser"])->group(function(){
 
 Route::prefix("admin")->group(function() {
 
@@ -107,6 +108,8 @@ Route::prefix("admin")->group(function() {
     Route::view("/listUsers","admin.listUsers");
     Route::get("/listUsers/statusChange","AdminController@UserStatus");
 });
+});
+
 
 
 Route::post("/regCheck","MainController@regCheck");
