@@ -53,6 +53,8 @@ Route::middleware(["CheckAdmin"])->group(function(){
 
         //Transaksi
         Route::view('/cart', 'Cart');
+        Route::get("/addJumlahCart","cartcontroler@AddItem");
+        Route::get("/minusJumlahCart","cartcontroler@MinusItem");
         Route::get('/hapus/{id}','cartcontroler@hapuscart');
         Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
         Route::post('/checkout','cartcontroler@checkout');
@@ -107,6 +109,13 @@ Route::prefix("admin")->group(function() {
     // Function Users
     Route::view("/listUsers","admin.listUsers");
     Route::get("/listUsers/statusChange","AdminController@UserStatus");
+    Route::get("/listUsers/DeleteUser","AdminController@DeleteUsers");
+    //End Functio Users
+
+    //Function Kategory
+    Route::view("/Kategori","admin.listKategory");
+    Route::view("/Kategori/Add","admin.addKategory");
+    Route::post("/Kategori/Add/AddNew","AdminController@AddNewKategori");
 });
 });
 

@@ -139,13 +139,13 @@ class MainController extends Controller
         }else{
             $tempUser = strtoupper(substr($validateData["Nama"],0,2));
         }
-        $countData = Users::where("id_user","like","%".$tempUser."%")->count()+1;
-        if($countData < 10){
-            $tempUser = $tempUser."_00".$countData;
-        }else if($countData < 100){
-            $tempUser = $tempUser."_0".$countData;
+        $countData = explode('_',Users::where("id_user","like","%".$tempUser."%")->max('id_user'));
+        if($countData[1]+1 < 10){
+            $tempUser = $tempUser."_00".($countData[1]+1);
+        }else if($countData[1] < 100){
+            $tempUser = $tempUser."_0".($countData[1]+1);
         }else{
-            $tempUser = $tempUser."_".$countData;
+            $tempUser = $tempUser."_".($countData[1]+1);
         }
         $pass = password_hash($validateData["Password"], \PASSWORD_DEFAULT);
         $newUsers = new Users();

@@ -59,6 +59,24 @@ class cartcontroler extends Controller
         }
     }
 
+    public function AddItem(Request $req){
+        $final = 0;
+        $cart = Session::get('cart');
+        $cart[Auth::user()->nama_user][$req->id]['qty'] += 1;
+        Session::put('cart', $cart);
+        $final = $cart[Auth::user()->nama_user][$req->id]['qty'];
+        return $final;
+    }
+
+    public function MinusItem(Request $req){
+        $final = 0;
+        $cart = Session::get('cart');
+        $cart[Auth::user()->nama_user][$req->id]['qty'] -= 1;
+        Session::put('cart', $cart);
+        $final = $cart[Auth::user()->nama_user][$req->id]['qty'];
+        return $final;
+    }
+
     public function checkout(Request $req)
     {
         $validasi = $req->validate(

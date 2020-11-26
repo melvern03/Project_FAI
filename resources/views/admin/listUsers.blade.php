@@ -33,7 +33,7 @@
             <td>{{$item->alamat}}</td>
             <td>{{$item->no_telp}}</td>
             <td align='center'>
-                <button class="btn btn-danger deleteUsers">Delete User</button>
+                <button class="btn btn-danger deleteUsers" value="{{$item->id_user}}" temp="{{$item->nama_user}}">Delete User</button>
                 @if ($item->status == "Aktif")
                     <button class="btn btn-dark statChange" tipe="blacklist" temp="{{$item->nama_user}}" value="{{$item->id_user}}">Blacklist User</button>
                 @elseif($item->status=="Blacklist")
@@ -49,7 +49,32 @@
     $(document).ready(function(){
         $("#listUsers").DataTable();
         $(document).on('click',".deleteUsers",function(e){
-
+            var id = $(this).val();
+            var nama = $(this).attr("temp");
+            Swal.fire({
+                title: 'Apakah anda ingin menghapus user '+nama+' ?',
+                showDenyButton: true,
+                confirmButtonText: `Yes`,
+                denyButtonText: `No`,
+                }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        $.get('{{ url("admin/listUsers/DeleteUser") }}',{id : id}, function(response) {
+                        if(response == "Success"){
+                            Swal.fire({
+                                text: "User Deleted",
+                                icon: 'success',
+                                }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            })
+                        }
+                    });
+                    } else if (result.isDenied) {
+                        Swal.fire('Changes are not saved', '', 'info')
+                    }
+                })
         })
         $(document).on("click",".statChange",function(e){
             var id = $(this).val();

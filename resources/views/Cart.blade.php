@@ -20,53 +20,59 @@
     </h3>
     <hr>
 </div>
-    <div style=" display: flex;flex-wrap: nowrap;flex-direction: row;justify-content: space-evenly;">
+    <div style="width: 90%;margin:auto">
         @if (Session::has('cart'))
-            @foreach (Session::get('cart') as $key => $item)
-                @if ($key == Auth::user()->nama_user)
-                @php
-                    $cek = "ada";
-                @endphp
-                    @foreach ($item as $databaju)
-                    <div class="card" style="width: 20rem;">
-                        <img src="{{url('baju/'.DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('gambar'))}}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU')}}</h5>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    Detail :
-                                </div>
-                                <div class="col-md-6">
-                                    {{"Rp. ".number_format(DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'))}}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">Color :</div>
-                                <div class="col-md-6" ><div class="kotak" style="width: 40px;height: auto ;background-color: {{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('WARNA')}};border:3px solid black"><br></div></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">Size : </div>
-                                <div class="col-md-6">{{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('UKURAN')}}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">Quantity</div>
-                                <div class="col-md-6">{{$databaju['qty']}}</div>
-                            </div>
-
-                        <a href="/hapus/{{$databaju['id_dbaju']}}" class="btn btn-danger">Remove</a>
-                        </div>
-                    </div>
-                    @endforeach
-                @endif
-            @endforeach
+        <table class='table-striped display' id='listCart' align='center'>
+            <thead>
+                <td>Gambar</td>
+                <td>Nama</td>
+                <td>Warna</td>
+                <td>Size</td>
+                <td>Harga</td>
+                <td>Jumlah</td>
+                <td>Sub Total</td>
+            </thead>
+            <tbody>
+                @foreach (Session::get('cart') as $key => $item)
+                    @if ($key == Auth::user()->nama_user)
+                        @php
+                            $cek = "ada";
+                        @endphp
+                        @foreach ($item as $databaju)
+                            <tr>
+                                <td><img src="{{url('baju/'.DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('gambar'))}}" class="card-img-top" alt="..." style="width:150px;height:150px"></td>
+                                <td>{{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU')}}</td>
+                                <td><div style="background-color: {{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('WARNA')}};border:3px solid black;width:50px;height:50px;margin:auto"></div></td>
+                                <td>{{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('UKURAN')}}</td>
+                                <td>{{"Rp. ".number_format(DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'))}}</td>
+                                <td>
+                                    <button class='btn btn-danger KurangiItem' id='remove{{$databaju['id_dbaju']}}' style="margin-right:10px" value='{{$databaju['id_dbaju']}}'><i class="fas fa-minus"></i></button>
+                                    <span id="jumlah{{$databaju['id_dbaju']}}">{{$databaju['qty']}}</span>
+                                    <button class='btn btn-success addMoreItem' id='add{{$databaju['id_dbaju']}}' style="margin-left:10px" value='{{$databaju['id_dbaju']}}'><i class="fas fa-plus"></i></button>
+                                </td>
+                                <td>{{"Rp. ".number_format($databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'))}}</td>
+                            </tr>
+                        @endforeach
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
         @endif
 
     </div>
     @if ($cek == "")
+    <script>
+        $("#listCart").hide();
+    </script>
     <br>
         <h2 align='center'>Cart Anda Masih Kosong</h2>
     @else
+
+<script>
+    $(document).ready(function(){
+        $("#listCart").DataTable({searching:false});
+    })
+</script>
     <div style="background-color: cornsilk;text-align:center;">
         <br>
         <h1 class="display-3">Shipping Method</h1><br>
@@ -74,10 +80,10 @@
             <div class="card-deck mb-3 text-center">
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Grab</h4>
+                        <h4 class="my-0 font-weight-normal">Instant</h4>
                     </div>
                     <div class="card-body">
-                        <img src="{{url('/AssetCart/grab.png')}}" style="height: 150px;width:325px">
+                        <img src="{{url('/AssetCart/Instant.png')}}" style="height: 150px;width:325px">
                         <h1 class="card-title pricing-card-title">Rp. 5.000</h1>
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>4-5 hours Work days</li>
@@ -89,10 +95,10 @@
                 </div>
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Jne Express</h4>
+                        <h4 class="my-0 font-weight-normal">Normal Shipment</h4>
                     </div>
                     <div class="card-body">
-                        <img src="{{url('/AssetCart/jne.png')}}" style="height: 150px;width:325px">
+                        <img src="{{url('/AssetCart/Normal.png')}}" style="height: 150px;width:325px">
                         <h1 class="card-title pricing-card-title">Rp. 10.000</h1>
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>4-5 Shipment Work days</li>
@@ -103,10 +109,10 @@
                 </div>
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Si Cepat</h4>
+                        <h4 class="my-0 font-weight-normal">One Day Delivery</h4>
                     </div>
                     <div class="card-body">
-                        <img src="{{url('/AssetCart/siCepat.png')}}" style="height: 150px;width:325px">
+                        <img src="{{url('/AssetCart/SameDay.png')}}" style="height: 150px;width:325px">
                         <h1 class="card-title pricing-card-title">Rp. 15.000</h1>
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>1 Shipment Work days</li>
@@ -123,4 +129,38 @@
 </div>
 <br><br>
 @include('footer')
+<script>
+    $(document).ready(function(){
+        $(document).on('click','.addMoreItem',function(){
+            var id = $(this).val();
+            $.get('{{ url("/addJumlahCart") }}',{id : id}, function(response) {
+                $("#jumlah"+id).text(response);
+            });
+        })
+
+        $(document).on('click', '.KurangiItem', function () {
+
+            var id = $(this).val();
+            if ($("#jumlah" + $(this).val()).text() == "1") {
+                Swal.fire({
+                    title: 'Anda ingin yakin menghapus barang tersebut dari Cart?',
+                    showDenyButton: true,
+                    confirmButtonText: `Yes`,
+                    denyButtonText: `No`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Saved!', '', 'success')
+                    } else if (result.isDenied) {
+                        Swal.fire('Changes are not saved', '', 'info')
+                    }
+                })
+            }else{
+                $.get('{{ url("/minusJumlahCart") }}',{id : id}, function(response) {
+                    $("#jumlah"+id).text(response);
+                });
+
+            }
+        })
+    })
+</script>
 @endsection

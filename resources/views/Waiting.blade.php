@@ -60,6 +60,8 @@
                 </tbody>
               </table>
               <br>
+              <div align='right'>
+              <h3>Subtotal      : {{"Rp. ".number_format($subtotal)}}</h3>
               @php
                    if (Session::get('kirim')=="GRAB")
                     {
@@ -73,9 +75,10 @@
                         $subtotal += 15000;
                     }
               @endphp
-              <h2>Biaya Ongkir : {{"Rp. ".number_format(Session::get('harga'))}}</h2>
-            <h3>Grand Total : {{"Rp. ".number_format($subtotal)}}</h3>
-              <br>Please kindly transfer <br>
+                <h3>Biaya Ongkir    : {{"Rp. ".number_format(Session::get('harga'))}}</h3>
+                <h3>Grand Total     : {{"Rp. ".number_format($subtotal)}}</h3>
+            </div>
+                <br>Please kindly transfer <br>
                in this Number : 10111101010111
               <br><hr>
               <h6>Please Kindly Upload Your Transaction Proof</h6><br>

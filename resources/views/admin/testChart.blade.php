@@ -2,46 +2,67 @@
 
 @section('Content')
 <?php
+use Illuminate\Support\Carbon;
+Use App\Model\h_transaksi;
 
-$dataPoints = array(
-	array("y" => 3373.64, "label" => "Germany" ),
-	array("y" => 2435.94, "label" => "France" ),
-	array("y" => 1842.55, "label" => "China" ),
-	array("y" => 1828.55, "label" => "Russia" ),
-	array("y" => 1039.99, "label" => "Switzerland" ),
-	array("y" => 765.215, "label" => "Japan" ),
-	array("y" => 612.453, "label" => "Netherlands" )
-);
+$dataPoints = [];
+$number = cal_days_in_month(CAL_GREGORIAN,Carbon::now()->month,Carbon::now()->year);
 
+
+for ($i=1; $i <= $number; $i++) {
+    $data = array(
+        "y"=>0,
+        "label"=>$i."/".Carbon::now()->month."/".Carbon::now()->year
+    );
+    $dataPoints[] = $data;
+}
+foreach (h_transaksi::all() as $key => $value) {
+    $dataPoints[Carbon::parse($value->tgl_jual)->format('d') - 1]["y"] = $dataPoints[Carbon::parse($value->tgl_jual)->format('d') - 1]["y"] + $value->grand_total;
+}
 ?>
 <!DOCTYPE HTML>
 <html>
 <head>
 <script>
-window.onload = function() {
+$(document).ready(function(){
 
+var d = new Date();
+var d = new Date();
+var month = new Array();
+month[0] = "January";
+month[1] = "February";
+month[2] = "March";
+month[3] = "April";
+month[4] = "May";
+month[5] = "June";
+month[6] = "July";
+month[7] = "August";
+month[8] = "September";
+month[9] = "October";
+month[10] = "November";
+month[11] = "December";
 var chart = new CanvasJS.Chart("chartContainer", {
 	animationEnabled: true,
 	theme: "light2",
 	title:{
-		text: "Gold Reserves"
+		text: "Penjulan Bulan "+month[d.getMonth()]
 	},
 	axisY: {
-		title: "Gold Reserves (in tonnes)"
+		title: "Jumlah Penjualan (Rp)"
 	},
 	data: [{
 		type: "column",
-		yValueFormatString: "#,##0.## tonnes",
+		yValueFormatString: "Rp #,##0.##",
 		dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
 	}]
 });
 chart.render();
 
-}
+})
 </script>
 </head>
 <body>
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<div id="chartContainer" style="height: 10%; width: 80%;"></div>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 </body>

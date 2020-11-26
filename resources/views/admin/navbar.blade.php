@@ -38,6 +38,33 @@
                 <hr>
                 <ul class="nav flex-column">
                     <li class="nav-item">
+                        <a class="nav-link actived" href="/admin/Promo">
+                            <span data-feather="file"></span>
+                            Promo
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link actived" href="/admin/Kategori">
+                            <span data-feather="file"></span>
+                            Kategori
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link actived" href="/admin/Report">
+                            <span data-feather="file"></span>
+                            Laporan
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
                         <a class="nav-link actived" href="/admin/ListTransaksi">
                             <span data-feather="file"></span>
                             List Transaksi

@@ -131,7 +131,7 @@
             </div>
         </div>
     </div>
-
+<input type="hidden" value='' id='tempKategoriData'>
 </main>
 <script>
     $(document).ready(function () {
@@ -163,32 +163,24 @@
                 </tr>
             </thead>
             <tbody>`;
-                response.data.forEach(el => {
-                    tempId = el.ID_HBAJU;
-                var n_match = ntc.name(el.WARNA);
-                var Kategori = "";
-                if(el.ID_KATEGORI == 1){
-                    Kategori = "Man T-Shirt";
-                }else if(el.ID_KATEGORI == 2){
-                    Kategori = "Woman T-Shirt";
-                }else if(el.ID_KATEGORI == 3){
-                    Kategori = "Man Jacket & Sweater";
-                }else if(el.ID_KATEGORI==4){
-                    Kategori = "Woman Jacket & Sweater";
-                }
-                    dom += `<tr>
-                        <td>`+el.NAMA_BAJU+`</td>
-                        <td>`+el.UKURAN+`</td>
+            var data = JSON.parse(response)
+            for(var k in data) {
+                tempId = data[k]['ID_HBAJU'];
+                var n_match = ntc.name(data[k]["WARNA"]);
+                var Kategori = data[k]["NAMA_KATEGORI"];
+                dom+= `<tr>
+                        <td>`+data[k]["NAMA_BAJU"]+`</td>
+                        <td>`+data[k]["UKURAN"]+`</td>
                         <td style='background-color:`+n_match[0]+`;border:2px solid black'></td>
-                        <td>`+el.STOK+`</td>
+                        <td>`+data[k]["STOK"]+`</td>
                         <td>`+Kategori+`</td>
                         <td>
-                            <button type='submit' class='btn btn-danger hapusData' value=`+el.id_dbaju+` data='`+el.NAMA_BAJU+`'>Delete</button>
-                            <button type='submit' class='btn btn-warning editModel' value=`+el.id_dbaju+`>Edit</button>
+                            <button type='submit' class='btn btn-danger hapusData' value=`+data[k]["id_dbaju"]+` data='`+data[k]["NAMA_BAJU"]+`'>Delete</button>
+                            <button type='submit' class='btn btn-warning editModel' value=`+data[k]["id_dbaju"]+`>Edit</button>
                         </td>
-                    </tr>`;
-                });
-                if (response.data.length <= 0) {
+                    </tr>`
+                }
+                if (JSON.parse(response).length <= 0) {
                     dom += "<tr><td>Tidak ada data ditemukan</td></tr>";
                 }
                 dom += `</tbody></table>`;

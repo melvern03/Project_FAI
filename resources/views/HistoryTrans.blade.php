@@ -43,7 +43,7 @@ History
                             <td class="bg-info text-white">Order Sent</td>
                         @endif
                         <td>
-                            <form action="/getDataDetail" method="POST">
+                            <form action="/getDataDetail" method="POST" style="display: inline-block">
                                 @csrf
                                 <button class='btn btn-success' name="detailTrans" value='{{$item->id_hjual}}'>Show Detail</button>
                             </form>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Model\Users;
 use App\Model\h_transaksi;
 use App\Model\d_jual;
+use App\Model\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
@@ -160,8 +161,20 @@ class AdminController extends Controller
         }
     }
     function searchVariant(Request $req){
-        $arrData = DB::table("d_baju")->where("ID_HBAJU",$req->nama)->get();
-        return Variant::collection($arrData);
+        $arrData = [];
+        foreach(DB::table("d_baju")->where("ID_HBAJU",$req->nama)->get() as $item){
+            $dataBaru = array(
+                "ID_HBAJU"          => $item->ID_HBAJU,
+                "id_dbaju"          => $item->id_dbaju,
+                "NAMA_BAJU"         => $item->NAMA_BAJU,
+                "WARNA"             => $item->WARNA,
+                "UKURAN"            => $item->UKURAN,
+                "STOK"              => $item->STOK,
+                "NAMA_KATEGORI"          => DB::table('kategori')->where('ID_KATEGORI',$item->ID_KATEGORI)->value('NAMA_KATEGORI')
+            );
+            $arrData[] = $dataBaru;
+        }
+        return json_encode($arrData);
     }
     function searchData(Request $req){
         $arrData = DB::table("d_baju")->where("id_dbaju",$req->nama)->get();
@@ -311,7 +324,39 @@ class AdminController extends Controller
         }
         return "Success";
     }
+
+    function DeleteUsers(Request $req){
+        Users::where('id_user',$req->id)->delete();
+        return "Success";
+    }
     //End Function User
+
+    //Function Kategori
+    function AddNewKategori(Request $req){
+        $valid = $req->validate(
+            [
+                "NamaKategori"=>"regex:/^([^0-9]*)$/"
+            ],
+            [
+                "NamaKategori.regex"=>"Nama Kategori Tidak Boleh Mengandung Angka"
+            ]
+        );
+        $count = 0;
+        foreach (Category::all() as $key) {
+            if(strtolower(trim($key->NAMA_KATEGORI)) == strtolower(trim($req->NamaKategori))){
+                $count = $count + 1;
+            }
+        }
+        if($count==0){
+            $newCategory = new Category();
+            $newCategory->NAMA_KATEGORI = $req->NamaKategori;
+            $newCategory->save();
+            return redirect("/admin/Kategori/Add")->with("Success","ada");
+        }else{
+            return redirect("/admin/Kategori/Add")->with("errorDup","ada");
+        }
+    }
+    //end Function Kategori
 
     //Email
     function sendEmail($to, $subject, $body) {
