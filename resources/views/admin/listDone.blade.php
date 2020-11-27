@@ -48,6 +48,7 @@
             $.get('{{ url("admin/ListTransaksi/getDetail") }}',{id : id}, function(response) {
                 var hasil = JSON.parse(response);
                 var grand = ongkir;
+                var diskon = 0;
                 var dom=` <h2>Detail Order</h2>
                 <button class="btn btn-primary" id='backToMainDone'>Back</button>
                 <h3></h3>
@@ -70,9 +71,12 @@
                     </tr>
                     `;
                     grand = parseInt(grand)+parseInt(obj.subtotal);
+                    diskon = obj.diskon;
                 }
                 dom+=`</tbody></table>
+                <h3 style='margin-right:10%'>Sub Total : Rp. `+new Intl.NumberFormat('ID').format(grand-ongkir)+`</h3>
                 <h3 style='margin-right:10%'>Biaya Ongkir : Rp. `+new Intl.NumberFormat('ID').format(ongkir)+`</h3>
+                <h3 style='margin-right:10%'>Discount : Rp. `+new Intl.NumberFormat('ID').format(diskon)+`</h3>
                 <h3 style='margin-right:10%'>Grand Total : Rp. `+new Intl.NumberFormat('ID').format(grand)+`</h3>`;
                 $("#historyDetail").html(dom);
                 $("#historyDetail").show();

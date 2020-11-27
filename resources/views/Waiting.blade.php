@@ -15,7 +15,7 @@
             <h1 class="display-3">Your Order</h1><br>
             <small class="text-muted">Please Finish Your Transaction</small><br>
             @if (Auth::check())
-             <label>{{Auth::User()->nama_user}}</label> <br>
+            <label>{{Auth::User()->nama_user}}</label> <br>
             <label>{{DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('alamat')}}</label> <br>
             <label>{{DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('email')}}</label> <br>
             <label>{{DB::table('user')->where('nama_user',Auth::User()->nama_user)->value('no_telp')}}</label><br>
@@ -29,7 +29,7 @@
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col">Nama Baju</th>
-                    <th scope="col">qty</th>
+                    <th scope="col">Jumlah</th>
                     <th scope="col">Harga</th>
                     <th scope="col">Total</th>
                   </tr>
@@ -76,29 +76,48 @@
                     }
               @endphp
                 <h3>Biaya Ongkir    : {{"Rp. ".number_format(Session::get('harga'))}}</h3>
+                @if (Session::has('promo'))
+                    @php
+                        $promo = Session::get('promo');
+                        if(array_key_exists(Auth::user()->nama_user,$promo)){
+                            if($promo[Auth::user()->nama_user] != "No Promo"){
+                                $diskon = $subtotal*DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("diskon_promo")/100;
+                                if($diskon > DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon")){
+                                    $diskon = DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon");
+                                }
+                                echo "<h3>Discount : Rp. ".number_format($diskon)."<h3>";
+                                $subtotal -= $diskon;
+                                // echo DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("nama_promo");
+                            }
+                        }
+                    @endphp
+              @endif
                 <h3>Grand Total     : {{"Rp. ".number_format($subtotal)}}</h3>
             </div>
-                <br>Please kindly transfer <br>
-               in this Number : 10111101010111
-              <br><hr>
-              <h6>Please Kindly Upload Your Transaction Proof</h6><br>
-              <br>
-              <form action="/checkout" method="post" enctype="multipart/form-data">
+            <br>Please kindly transfer <br>
+            in this Number : 10111101010111
+            <br>
+            <hr>
+            <h6>Please Kindly Upload Your Transaction Proof</h6><br>
+            <br>
+            <form action="/checkout" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="file" name="fotocek" id="" class="btn btn-primary">
                 <br>
                 @error('fotocek')
-                    <span class="invalid-input-mess" style="color: red">{{$message}}</span>
+                <span class="invalid-input-mess" style="color: red">{{$message}}</span>
                 @enderror
-              <br><br><br>
-              <div class="row">
-                  <div class="col-md-6" style="text-align: right"><a href="/cart" class="btn btn-danger">Cancel</a></div>
-                  <div class="col-md-6" style="text-align: left"><button type="submit" class="btn btn-success">Proced</button></div>
-              </div>
+                <br><br><br>
+                <div class="row">
+                    <div class="col-md-6" style="text-align: right"><a href="/cart" class="btn btn-danger">Cancel</a>
+                    </div>
+                    <div class="col-md-6" style="text-align: left"><button type="submit"
+                            class="btn btn-success">Proced</button></div>
+                </div>
             </form>
-              <br><br><br>
-              <h5><small class="text-muted">If you already proceed, you cannot cancel your transaction.</small></h5>
-        </div>
+            <br><br><br>
+            <h5><small class="text-muted">If you already proceed, you cannot cancel your transaction.</small></h5>
+            </div>
     </main>
 </div>
 

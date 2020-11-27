@@ -8,6 +8,7 @@ use App\Model\Users;
 use App\Model\h_transaksi;
 use App\Model\d_jual;
 use App\Model\Category;
+use App\Model\Promo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
@@ -265,7 +266,8 @@ class AdminController extends Controller
                 "nama_baju"=> DB::table('d_baju')->where('id_dbaju',$value['id_barang'])->value('NAMA_BAJU'),
                 "jumlah"=>$value['qty'],
                 "harga"=>$value["harga"],
-                "subtotal"=>$value['subtotal']
+                "subtotal"=>$value['subtotal'],
+                "diskon"=>DB::table('h_jual')->where('id_hjual',$value['id_hjual'])->value("diskon")
             ];
             $data[] = $Newdata;
         }
@@ -357,6 +359,40 @@ class AdminController extends Controller
         }
     }
     //end Function Kategori
+
+    //Function Promo
+
+    function AddNewPromo(Request $req){
+        $valid = $req->validate(
+            [
+                "NamaPromo"=>"required",
+                "DiskonPromo"=>"required",
+                "tgl_end"=>"after:tgl_start",
+                "MaxDiskon"=>"required",
+                "gambarPromo"=>"required|mimetypes:image/png,image/jpg,image/jpeg"
+            ],
+            [
+                "NamaPromo.required"=>"Nama Tidak Boleh Kosong",
+                "DiskonPromo.required"=>"Diskon Promo Tidak Boleh Kosong",
+                "tgl_end.after"=>"Tanggal Promo Selesai harus lebih besar daripada Tangal Promo Mulai",
+                "MaxDiskon.required"=>"Max Diskon Tidak Boleh Kosong",
+                "gambarPromo.required"=>"Harus Upload Sebuah Gambar",
+                "gambarPromo.mimetype"=>"Gambar yang diupload harus berupa gambar"
+            ]
+        );
+        $extension = $req->file("gambarPromo")->extension();
+        $req->file("gambarPromo")->move(public_path("/Promo/Asset"),$req->NamaPromo."-".$req->tgl_start.".".$extension);
+        $newPromo = new Promo();
+        $newPromo->nama_promo = $req->NamaPromo;
+        $newPromo->maximal_diskon = $req->MaxDiskon;
+        $newPromo->diskon_promo = $req->DiskonPromo;
+        $newPromo->tgl_start = $req->tgl_start;
+        $newPromo->tgl_end = $req->tgl_end;
+        $newPromo->gambar = "/Promo/Asset/".$req->NamaPromo."-".$req->tgl_start.".".$extension;
+        $newPromo->save();
+    }
+
+    //End Function Promo
 
     //Email
     function sendEmail($to, $subject, $body) {

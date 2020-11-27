@@ -8,6 +8,7 @@
 @include('Navbar')
 @php
     $cek = "";
+    use App\Model\Promo;
 @endphp
 <div style="background-color:white;background-size:100%;;text-align: center;">
 <br>
@@ -26,6 +27,7 @@
             <thead>
                 <td>Gambar</td>
                 <td>Nama</td>
+                <td>Kategori</td>
                 <td>Warna</td>
                 <td>Size</td>
                 <td>Harga</td>
@@ -42,23 +44,24 @@
                             <tr>
                                 <td><img src="{{url('baju/'.DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('gambar'))}}" class="card-img-top" alt="..." style="width:150px;height:150px"></td>
                                 <td>{{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU')}}</td>
+                                <td>{{DB::table('kategori')->where("ID_KATEGORI",DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('ID_KATEGORI'))->value('NAMA_KATEGORI')}}</td>
                                 <td><div style="background-color: {{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('WARNA')}};border:3px solid black;width:50px;height:50px;margin:auto"></div></td>
                                 <td>{{DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('UKURAN')}}</td>
-                                <td>{{"Rp. ".number_format(DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'))}}</td>
+                                <td>{{"Rp. ".number_format(DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'),0,',','.')}}</td>
                                 <td>
-                                    <button class='btn btn-danger KurangiItem' id='remove{{$databaju['id_dbaju']}}' style="margin-right:10px" value='{{$databaju['id_dbaju']}}'><i class="fas fa-minus"></i></button>
+                                <button class='btn btn-danger KurangiItem' id='remove{{$databaju['id_dbaju']}}' temp="{{DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga')}}" style="margin-right:10px" value='{{$databaju['id_dbaju']}}'><i class="fas fa-minus"></i></button>
                                     <span id="jumlah{{$databaju['id_dbaju']}}">{{$databaju['qty']}}</span>
-                                    <button class='btn btn-success addMoreItem' id='add{{$databaju['id_dbaju']}}' style="margin-left:10px" value='{{$databaju['id_dbaju']}}'><i class="fas fa-plus"></i></button>
+                                    <button class='btn btn-success addMoreItem' id='add{{$databaju['id_dbaju']}}' style="margin-left:10px" temp="{{DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga')}}" value='{{$databaju['id_dbaju']}}'><i class="fas fa-plus"></i></button>
                                 </td>
-                                <td>{{"Rp. ".number_format($databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'))}}</td>
+                                <td><span id='subtotal{{$databaju['id_dbaju']}}'>{{"Rp. ".number_format($databaju['qty'] * DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'),0,',','.')}}</span></td>
                             </tr>
                         @endforeach
                     @endif
                 @endforeach
             </tbody>
         </table>
-        @endif
 
+        @endif
     </div>
     @if ($cek == "")
     <script>
@@ -67,7 +70,39 @@
     <br>
         <h2 align='center'>Cart Anda Masih Kosong</h2>
     @else
+<div class='form-group' style="margin:auto;width:50%">
+    <label for="exampleFormControlSelect1" style="font-size: 18pt">Promo</label>
+    <select id='promoPicker' class="form-control">
+        @if (Session::has('promo'))
+            @php
+                echo "<option>No Promo</option>";
+                $promo = Session::get('promo');
+                if(array_key_exists(Auth::user()->nama_user,$promo)){
+                    foreach (Promo::where("tgl_start","<=",date("Y/m/d"))->where('tgl_end',">=",date("Y/m/d"))->get() as $key => $value) {
+                        if($promo[Auth::user()->nama_user] == $value->id_promo){
+                            echo "<option value='$value->id_promo' selected>$value->nama_promo - Discount $value->diskon_promo%</option>";
+                        }else{
+                            echo "<option value='$value->id_promo'>$value->nama_promo - Discount $value->diskon_promo%</option>";
+                        }
 
+                    }
+                }else{
+                    foreach (Promo::where("tgl_start","<=",date("Y/m/d"))->where('tgl_end',">=",date("Y/m/d"))->get() as $key => $value) {
+                        echo "<option value='$value->id_promo'>$value->nama_promo - Discount $value->diskon_promo%</option>";
+                    }
+                }
+            @endphp
+        @else
+            @php
+                 echo "<option disabled hidden selected>No Promo</option>";
+                    foreach (Promo::where("tgl_start","<=",date("Y/m/d"))->where('tgl_end',">=",date("Y/m/d"))->get() as $key => $value) {
+                        echo "<option value='$value->id_promo'>$value->nama_promo - Discount $value->diskon_promo%</option>";
+                    }
+            @endphp
+        @endif
+    </select>
+</div>
+<br>
 <script>
     $(document).ready(function(){
         $("#listCart").DataTable({searching:false});
@@ -133,14 +168,16 @@
     $(document).ready(function(){
         $(document).on('click','.addMoreItem',function(){
             var id = $(this).val();
+            var harga = $(this).attr('temp');
             $.get('{{ url("/addJumlahCart") }}',{id : id}, function(response) {
                 $("#jumlah"+id).text(response);
+                $("#subtotal"+id).text("Rp. "+new Intl.NumberFormat('ID').format(response * harga));
             });
         })
 
         $(document).on('click', '.KurangiItem', function () {
-
             var id = $(this).val();
+            var harga = $(this).attr('temp');
             if ($("#jumlah" + $(this).val()).text() == "1") {
                 Swal.fire({
                     title: 'Anda ingin yakin menghapus barang tersebut dari Cart?',
@@ -157,9 +194,17 @@
             }else{
                 $.get('{{ url("/minusJumlahCart") }}',{id : id}, function(response) {
                     $("#jumlah"+id).text(response);
+                    $("#subtotal"+id).text("Rp. "+new Intl.NumberFormat('ID').format(response * harga));
                 });
 
             }
+        })
+
+        $(document).on("change","#promoPicker",function(){
+            var id = $(this).val();
+            $.get('{{ url("/addPromoCode") }}',{id : id}, function(response) {
+
+            });
         })
     })
 </script>

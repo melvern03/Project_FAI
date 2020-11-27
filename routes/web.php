@@ -60,6 +60,7 @@ Route::middleware(["CheckAdmin"])->group(function(){
         Route::post('/checkout','cartcontroler@checkout');
         Route::get("/OrderFinishUser","userController@finishOrder");
         Route::view('/trans', 'Track');
+        Route::get("/addPromoCode","cartcontroler@addPromoCode");
         //End Transaksi
         Route::get("/cek","userController@cekSession");
 
@@ -116,6 +117,13 @@ Route::prefix("admin")->group(function() {
     Route::view("/Kategori","admin.listKategory");
     Route::view("/Kategori/Add","admin.addKategory");
     Route::post("/Kategori/Add/AddNew","AdminController@AddNewKategori");
+    //End Function Kategory
+
+    //Function Promo
+    Route::view("/Promo","admin.listPromo");
+    Route::view("/Promo/Add","admin.addPromo");
+    Route::post("/Promo/Add/AddPromo","AdminController@AddNewPromo");
+    //End Function Promo
 });
 });
 

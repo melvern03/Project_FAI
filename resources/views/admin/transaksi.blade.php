@@ -197,6 +197,7 @@
         $(document).on('click',"#backToMainTrans",function(e){
             $("#mainTrans").show('slow');
             $("#detailOrder").hide('slow');
+            $("#detailOrder").html('');
         })
     });
 </script>

@@ -77,6 +77,13 @@ class cartcontroler extends Controller
         return $final;
     }
 
+    public function addPromoCode(Request $req){
+        $promo = Session::get("promo");
+        $promo[Auth::user()->nama_user] = $req->id;
+        Session::put('promo',$promo);
+        return "Success";
+    }
+
     public function checkout(Request $req)
     {
         $validasi = $req->validate(
@@ -90,6 +97,7 @@ class cartcontroler extends Controller
 
             ]
         );
+        $diskon = 0;
 
         $cekextensi = $req->file('fotocek')->extension();
         $tempId = "CK";
@@ -127,11 +135,22 @@ class cartcontroler extends Controller
                 }
             }
         }
+        $promo = Session::get("promo");
+        if(array_key_exists(Auth::user()->nama_user,$promo)){
+            if($promo[Auth::user()->nama_user] != "No Promo"){
+                $diskon = $subtotal*DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("diskon_promo")/100;
+                if($diskon > DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon")){
+                    $diskon = DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon");
+                }
+                $total -= $diskon;
+            }
+        }
 
         DB::table('h_jual')->insert(
             [
                 'id_hjual' => $tempId,
                 'tgl_jual' => Carbon::now(),
+                'diskon' => $diskon,
                 'grand_total'=>$total,
                 'id_user' => DB::table('user')->where('id_user',Auth::User()->id_user)->value('id_user'),
                 'status' => 0,

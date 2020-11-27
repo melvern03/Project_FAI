@@ -5,47 +5,41 @@
 @endsection
 
 @section('Content')
+@php
+    Use App\Model\Promo;
+    use Illuminate\Support\Carbon;
+@endphp
 <div style="background-color:white;background-size:100%;;text-align: center;">
     @include('Navbar')
     <section>
         <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" style="margin-bottom: 100px;">
-            <ol class="carousel-indicators">
-              <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-              <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-              <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-            </ol>
             <div class="carousel-inner">
-              <div class="carousel-item active">
-                <img src="{{url('Promo/Promo1.jpg')}}" class="d-block w-100 " focusable="false" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
-                    <br>
+                <div class="carousel-item active">
+                    <img src="{{url('Promo/default1.jpg')}}" class="d-block w-100 " focusable="false" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
+                        <br>
+                    </div>
                 </div>
-              </div>
-              <div class="carousel-item">
-                <img src="{{url('Promo/Promo2.jpg')}}" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
-                    <br>
-                </div>
-              </div>
-              <div class="carousel-item">
-                <img src="{{url('Promo/Promo3.jpg')}}" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
-                    <br>
-                </div>
-              </div>
+                @foreach (Promo::where("tgl_start","<=",date("Y/m/d"))->where('tgl_end',">=",date("Y/m/d"))->get() as $item)
+                    <div class="carousel-item">
+                        <img src="{{url($item->gambar)}}" class="d-block w-100 " focusable="false" alt="...">
+                        <div class="carousel-caption d-none d-md-block">
+                            <a class="btn btn-light" href="{{ route('shop') }}">Shop Now</a>
+                            <br>
+                        </div>
+                    </div>
+                @endforeach
             </div>
             <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
             </a>
             <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
             </a>
-          </div>
+        </div>
         </section>
     {{-- ================================================================================================================================= --}}
     <div class="container">

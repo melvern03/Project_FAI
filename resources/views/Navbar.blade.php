@@ -37,6 +37,7 @@
               <a class="dropdown-item" href="/profile">Profile</a>
               <a class="dropdown-item" href="/History">History Transaksi</a>
               <a class="dropdown-item" href="/cart">Cart</a>
+              <a class="dropdown-item" href="/Feedback">Feedback</a>
               <a class="dropdown-item" href="/logAuth">Logout</a>
             </div>
           </li>
