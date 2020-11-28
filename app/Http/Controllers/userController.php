@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\resDbaju;
 use App\Http\Resources\resourcesSort;
 use App\Model\d_jual;
+use App\Model\Feedback;
 use App\Model\h_transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -256,6 +257,28 @@ class userController extends Controller
     public function getDataDetail(Request $req){
         $data = d_jual::where('id_hjual',$req->detailTrans)->get();
         return redirect("/DetailTransaksi")->with("dataDetail",$data);
+    }
+
+    public function AddFeedback(Request $req){
+        $newFeedback = new Feedback();
+        $newFeedback->message = $req->msg;
+        $newFeedback->id_user = Auth::user()->id_user;
+        $newFeedback->tgl_feedback = Carbon::now();
+        $newFeedback->save();
+        return redirect("/Feedback")->with("Success","Thank you");
+    }
+
+    public function AddFeedbackFooter(Request $req){
+        $newFeedback = new Feedback();
+        $newFeedback->message = $req->msg;
+        if(Auth::check()){
+            $newFeedback->id_user = Auth::user()->id_user;
+        }else{
+            $newFeedback->id_user = "Guest";
+        }
+        $newFeedback->tgl_feedback = Carbon::now();
+        $newFeedback->save();
+        return "Feedback";
     }
 
     public function cekSession(){

@@ -5,6 +5,15 @@ Register
 @section('Content')
 <div style="width: 100%; height: 100%;background-size:cover;">
     @include('Navbar')
+    @if (Session("Success"))
+        <script>
+            Swal.fire(
+                'Register Successfull',
+                'Silahkan melakukan verifikasi melalui email terlebih dahulu sebelum login',
+                'success'
+            )
+        </script>
+    @endif
     @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <h4 align="center">Errors</h4>

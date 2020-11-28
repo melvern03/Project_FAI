@@ -125,7 +125,7 @@ class cartcontroler extends Controller
                     DB::table('d_jual')->insert(
                         [
                             'id_hjual' => $tempId,
-                            'id_barang' => $databaju['id_dbaju'],
+                            'nama_barang' => DB::table('d_baju')->where('id_dbaju',$databaju['id_dbaju'])->value('NAMA_BAJU'),
                             'qty' => $databaju['qty'],
                             'harga' => DB::table('h_baju')->where('ID_HBAJU',$databaju['id_hbaju'])->value('harga'),
                             'subtotal' => $subtotal
@@ -136,16 +136,17 @@ class cartcontroler extends Controller
             }
         }
         $promo = Session::get("promo");
-        if(array_key_exists(Auth::user()->nama_user,$promo)){
-            if($promo[Auth::user()->nama_user] != "No Promo"){
-                $diskon = $subtotal*DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("diskon_promo")/100;
-                if($diskon > DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon")){
-                    $diskon = DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon");
+        if($promo != null){
+            if(array_key_exists(Auth::user()->nama_user,$promo)){
+                if($promo[Auth::user()->nama_user] != "No Promo"){
+                    $diskon = $subtotal*DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("diskon_promo")/100;
+                    if($diskon > DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon")){
+                        $diskon = DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon");
+                    }
+                    $total -= $diskon;
                 }
-                $total -= $diskon;
             }
         }
-
         DB::table('h_jual')->insert(
             [
                 'id_hjual' => $tempId,

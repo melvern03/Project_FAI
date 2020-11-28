@@ -235,7 +235,7 @@ class AdminController extends Controller
     function ProcessOrder(Request $req){
         $cek = true;
         foreach (d_jual::where('id_hjual',$req->id)->get() as $item) {
-            if($item->qty > DB::table('d_baju')->where('id_dbaju',$item->id_barang)->value("STOK")){
+            if($item->qty > DB::table('d_baju')->where('NAMA_BAJU',$item->nama_barang)->value("STOK")){
                 $cek = false;
             }
         }
@@ -247,8 +247,8 @@ class AdminController extends Controller
             if($this->sendEmail($to,"Order In Process",$body) == "sent"){
                 h_transaksi::where("id_hjual",$req->id)->update(["status"=>"1"]);
                 foreach (d_jual::where('id_hjual',$req->id)->get() as $item) {
-                    $newStock = DB::table('d_baju')->where('id_dbaju',$item->id_barang)->value('STOK') - $item->qty;
-                    DB::table('d_baju')->where('id_dbaju',$item->id_barang)->update(["STOK"=>$newStock]);
+                    $newStock = DB::table('d_baju')->where('NAMA_BAJU',$item->nama_barang)->value('STOK') - $item->qty;
+                    DB::table('d_baju')->where('NAMA_BAJU',$item->nama_barang)->update(["STOK"=>$newStock]);
                 }
                 return "Success";
             }else{
@@ -263,7 +263,7 @@ class AdminController extends Controller
         $data = [];
         foreach (d_jual::where('id_hjual',$req->id)->get() as $key => $value) {
             $Newdata = [
-                "nama_baju"=> DB::table('d_baju')->where('id_dbaju',$value['id_barang'])->value('NAMA_BAJU'),
+                "nama_baju"=> $value->nama_barang,
                 "jumlah"=>$value['qty'],
                 "harga"=>$value["harga"],
                 "subtotal"=>$value['subtotal'],
@@ -361,7 +361,6 @@ class AdminController extends Controller
     //end Function Kategori
 
     //Function Promo
-
     function AddNewPromo(Request $req){
         $valid = $req->validate(
             [
@@ -388,11 +387,98 @@ class AdminController extends Controller
         $newPromo->diskon_promo = $req->DiskonPromo;
         $newPromo->tgl_start = $req->tgl_start;
         $newPromo->tgl_end = $req->tgl_end;
-        $newPromo->gambar = "/Promo/Asset/".$req->NamaPromo."-".$req->tgl_start.".".$extension;
+        $newPromo->gambar = "/Promo/Asset/".$req->NamaPromo."-".$req->tgl_start."-".$req->tgl_end.".".$extension;
         $newPromo->save();
+        return redirect("/admin/Promo")->with("SuccessAddPromo","sip berhasil");
     }
 
+    function GetDataPromo(Request $req){
+        $arrData = [];
+        foreach(DB::table("promo")->where("id_promo",$req->id)->get() as $item){
+            $dataBaru = array(
+                "id"=>$item->id_promo,
+                "nama"=>$item->nama_promo,
+                "max"=>$item->maximal_diskon,
+                "diskon"=>$item->diskon_promo,
+                "tgl_start"=>$item->tgl_start,
+                "tgl_end"=>$item->tgl_end
+            );
+            $arrData[] = $dataBaru;
+        }
+        return json_encode($arrData);
+    }
+
+    function EditPromo(Request $req){
+        $nama = $req->nama;
+        $tglStart = $req->tglStart;
+        $tglEnd = $req->tglEnd;
+        $diskon = $req->diskon;
+        $max = $req->max;
+        try {
+            Promo::where('id_promo',$req->id)->update(["nama_promo"=>$nama,"maximal_diskon"=>$max,"diskon_promo"=>$diskon,"tgl_start"=>$tglStart,"tgl_end"=>$tglEnd]);
+            return "success";
+        } catch (\Throwable $th) {
+            return "gagal";
+        }
+    }
+
+    function DeletePromo(Request $req){
+        Promo::where('id_promo',$req->id)->delete();
+        return "success";
+    }
     //End Function Promo
+
+    //Function Report
+
+    function getDataReport(){
+        $dataPoints = [];
+        $number = cal_days_in_month(CAL_GREGORIAN,Carbon::now()->month,Carbon::now()->year);
+        for ($i=1; $i <= $number; $i++) {
+            $data = array(
+                "y"=>0,
+                "label"=>$i."/".Carbon::now()->month."/".Carbon::now()->year
+            );
+            $dataPoints[] = $data;
+        }
+        foreach (h_transaksi::all() as $key => $value) {
+            if(Carbon::parse($value->tgl_jual)->format("m") == Carbon::now()->month){
+                $dataPoints[Carbon::parse($value->tgl_jual)->format('d') - 1]["y"] = $dataPoints[Carbon::parse($value->tgl_jual)->format('d') - 1]["y"] + $value->grand_total;
+            }
+        }
+        return json_encode($dataPoints);
+    }
+
+    function getDataReportBaju(){
+        $dataPoints = [];
+        $cek = false;
+        foreach (d_jual::all() as $key => $value) {
+            $tgl = h_transaksi::where('id_hjual',$value->id_hjual)->value('tgl_jual');
+            if(Carbon::parse($tgl)->format("m") == Carbon::now()->month){
+                $cek = true;
+                for ($i=0; $i < count($dataPoints); $i++) {
+                    if($dataPoints[$i]["label"]==$value->nama_barang){
+                        $cek = false;
+                    }
+                }
+                if($cek){
+                    $data = array(
+                        "y"=>$value->qty,
+                        "label"=>$value->nama_barang
+                    );
+                    $dataPoints[] = $data;
+                }else{
+                    for ($i=0; $i < count($dataPoints); $i++) {
+                        if($dataPoints[$i]["label"]==$value->nama_barang){
+                            $dataPoints[$i]["y"]=$dataPoints[$i]["y"] + $value->qty;
+                        }
+                    }
+                }
+            }
+        }
+        return json_encode($dataPoints);
+    }
+
+    //End function Report
 
     //Email
     function sendEmail($to, $subject, $body) {

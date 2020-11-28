@@ -48,7 +48,6 @@
                 <label for="DiskonPromo">Diskon (%)</label>
                 <input type="number" name="DiskonPromo" class="form-control" min='1' max='100' value="{{old('DiskonPromo')}}">
             </div>
-
             <div class="form-group col-md-6">
                 <label for="tgl_start">Tanggal Promo Start</label>
                 <input class="form-control" type="date" name='tgl_start' value="<?= date('Y-m-d'); ?>" id="example-date-input">

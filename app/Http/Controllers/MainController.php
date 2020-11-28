@@ -38,6 +38,15 @@ class MainController extends Controller
         }
     }
 
+    function VerifikasiByEmail($id, $kode){
+        if(DB::table("konfrimasi_email")->where('id_user',$id)->where('code_verify',$kode)->count() > 0){
+            Users::where('id_user',$id)->update(['status'=>"Aktif"]);
+            DB::table('konfrimasi_email')->where('id_user',$id)->update(["status"=>"1"]);
+            return \redirect("/login")->with("verifySucces", "sip");
+        }
+        return redirect("/login")->with("verifyGagal","sorry");
+    }
+
     function logCheck(Request $req){
         $validateData = $req->validate(
             [
@@ -81,6 +90,8 @@ class MainController extends Controller
 
     function sendEmail($to, $subject, $body) {
         $mail = new PHPMailer(true);
+        $tempid = DB::table('konfrimasi_email')->where('code_verify',$body)->value('id_user');
+        $linkVerif = "http://localhost:8000/VerifByEmail/".$tempid."/".$body;
         $url = 'Logo/Logo(no title).png';
         try {
             $mail->isSMTP();                                            // Send using SMTP
@@ -96,11 +107,10 @@ class MainController extends Controller
             $mail->addAddress($to, 'User');     // Add a recipient
 
             // Content
-            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->IsHTML(true);                                  // Set email format to HTML
             $mail->AddEmbeddedImage($url,'logo');
             $mail->Subject = $subject;
-            $mail->Body    = "<img src='cid:logo' style='width:150px;height:150px'><br>Hi Sahabat Cassy. Silahkan Melakukan Konfrimasi untuk mengaktifkan akun member yang sudah anda registrasi dengan cara memasukan <br>Kode : <b>$body</b><br>Atau klik link dibawah ini<br><a href='http://localhost/proyek_aplin/konfirmasi.php?kode=$body'>Konfirmasi disini!</a>";
-            //$mail->AltBody = "<img src='cid:logo' style='width:150px;height:150px'><br>Hi Sahabat Cassy. Silahkan Melakukan Konfrimasi untuk mengaktifkan kaun member yang sudah anda registrasi dengan cara memasukan <br>Kode : <b>$body</b><br>Atau klik link dibawah ini<br><a href='http://localhost/proyek_aplin/konfirmasi.php?kode=$body'>Konfirmasi disini!</a>";
+            $mail->Body    = "<img src='cid:logo' style='width:150px;height:150px'><br>Hi Sahabat Cassy. Silahkan Melakukan Konfrimasi untuk mengaktifkan akun member yang sudah anda registrasi dengan cara memasukan <br>Kode : <b>$body</b><br>Atau klik link dibawah ini<br><a href='$linkVerif'>Konfirmasi disini!</a>";
 
             $mail->send();
             return "sent";
@@ -142,9 +152,12 @@ class MainController extends Controller
             $tempUser = strtoupper(substr($validateData["Nama"],0,2));
         }
         $countData = explode('_',Users::where("id_user","like","%".$tempUser."%")->max('id_user'));
+        if($countData[0] == ""){
+            $countData[] = 0;
+        }
         if($countData[1]+1 < 10){
             $tempUser = $tempUser."_00".($countData[1]+1);
-        }else if($countData[1] < 100){
+        }else if($countData[1]+1 < 100){
             $tempUser = $tempUser."_0".($countData[1]+1);
         }else{
             $tempUser = $tempUser."_".($countData[1]+1);
@@ -163,14 +176,14 @@ class MainController extends Controller
         $newUsers->jabatan="Member";
         $newUsers->save();
         $codeVerifikasi = $this->generateCode(20);
-        $this->sendEmail($req->Email,"Verifikasi",$codeVerifikasi);
         DB::table('konfrimasi_email')->insert(
             [
                 "id_user"=>$tempUser,
                 "code_verify"=>$codeVerifikasi,
                 "status"=>0
             ]);
-        return redirect("/register");
+        $this->sendEmail($req->Email,"Verifikasi",$codeVerifikasi);
+        return redirect("/register")->with("Success","oksip");
     }
 
     function addNewFile(Request $req){

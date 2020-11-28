@@ -25,7 +25,7 @@ Detail Transaksi
         <tbody>
             @foreach (Session("dataDetail") as $item)
                 <tr>
-                    <td>{{DB::table('d_baju')->where('id_dbaju',$item->id_barang)->value('NAMA_BAJU')}}</td>
+                    <td>{{$item->nama_barang}}</td>
                     <td>{{"Rp. ".number_format($item->harga,0,',','.')}}</td>
                     <td>{{$item->qty}}</td>
                     <td>{{"Rp. ".number_format($item->subtotal,0,',','.')}}</td>

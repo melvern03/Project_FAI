@@ -56,6 +56,15 @@
                 <hr>
                 <ul class="nav flex-column">
                     <li class="nav-item">
+                        <a class="nav-link actived" href="/admin/Feedback">
+                            <span data-feather="file"></span>
+                            Feedback
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
                         <a class="nav-link actived" href="/admin/Report">
                             <span data-feather="file"></span>
                             Laporan

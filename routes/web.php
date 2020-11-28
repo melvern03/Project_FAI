@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 Use App\Model\h_transaksi;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,6 @@ Route::middleware(["CheckAdmin"])->group(function(){
         // User
         Route::get("/","userController@home");
         Route::view("/aboutUs","AboutUs");
-        Route::view('/aboutUsPage', 'AboutUs');
         Route::view("/cart","cart");
         Route::view('/login', 'Login');
         Route::view('/register', 'Register');
@@ -34,40 +34,49 @@ Route::middleware(["CheckAdmin"])->group(function(){
         Route::any("/shop/{kategori}/sort","userController@shopCategorySort");
         Route::get('/addToCart', 'userController@addCart')->name('addCart');
         //End Shop
-
         //Detail
         Route::view('/detail','detail');
         Route::any('/detail/{hbaju}','userController@detail');
         Route::any('/detail/{hbaju}/{dbaju}','userController@detailItem');
         //EndDetail
 
-        //Detail Transaksi
-        Route::post("/getDataDetail","userController@getDataDetail");
-        Route::view("/DetailTransaksi","detailTransaksi");
+        //Function Feedback
+        Route::post("/AddCustomerFeedback","userController@AddFeedback");
+        Route::get("/AddFeedbackFromFooter","userController@AddFeedbackFooter");
 
-        //Review
-        Route::post("/getDataForReview","userController@getDataReview");
-        Route::view("/Review","Review");
-        Route::post("/addReview","userController@addReview");
-        //End Review
-
-        //Transaksi
-        Route::view('/cart', 'Cart');
-        Route::get("/addJumlahCart","cartcontroler@AddItem");
-        Route::get("/minusJumlahCart","cartcontroler@MinusItem");
-        Route::get('/hapus/{id}','cartcontroler@hapuscart');
-        Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
-        Route::post('/checkout','cartcontroler@checkout');
-        Route::get("/OrderFinishUser","userController@finishOrder");
-        Route::view('/trans', 'Track');
-        Route::get("/addPromoCode","cartcontroler@addPromoCode");
-        //End Transaksi
         Route::get("/cek","userController@cekSession");
 
-        Route::view("/History","HistoryTrans");
-        Route::get("/profile","userController@showProfile");
-        Route::post("/profile/{data}","userController@profileChange");
-        Route::post("/uploadNewFile","MainController@addNewFile");
+        Route::middleware(["CheckLogin"])->group(function(){
+            //Detail Transaksi
+            Route::post("/getDataDetail","userController@getDataDetail");
+            Route::view("/DetailTransaksi","detailTransaksi");
+            //End Detail
+
+            //Review
+            Route::post("/getDataForReview","userController@getDataReview");
+            Route::view("/Review","Review");
+            Route::post("/addReview","userController@addReview");
+            //End Review
+
+            Route::view("/History","HistoryTrans");
+            Route::get("/profile","userController@showProfile");
+            Route::post("/profile/{data}","userController@profileChange");
+            Route::post("/uploadNewFile","MainController@addNewFile");
+
+            //Transaksi
+            Route::view('/cart', 'Cart');
+            Route::get("/addJumlahCart","cartcontroler@AddItem");
+            Route::get("/minusJumlahCart","cartcontroler@MinusItem");
+            Route::get('/hapus/{id}','cartcontroler@hapuscart');
+            Route::get('/pilih/{id}/{harga}','cartcontroler@kirim');
+            Route::post('/checkout','cartcontroler@checkout');
+            Route::get("/OrderFinishUser","userController@finishOrder");
+            Route::view('/trans', 'Track');
+            Route::get("/addPromoCode","cartcontroler@addPromoCode");
+            //End Transaksi
+
+            Route::view("/Feedback","feedbackUser");
+        });
 
     });
 });
@@ -123,7 +132,19 @@ Route::prefix("admin")->group(function() {
     Route::view("/Promo","admin.listPromo");
     Route::view("/Promo/Add","admin.addPromo");
     Route::post("/Promo/Add/AddPromo","AdminController@AddNewPromo");
+    Route::get("/Promo/GetdataPromo","AdminController@GetDataPromo");
+    Route::get("/Promo/editPromo","AdminController@EditPromo");
+    Route::get("/Promo/DeletePromo","AdminController@DeletePromo");
     //End Function Promo
+
+    //Function Laporan
+    Route::view("/Report","admin.laporan");
+    Route::get("/Report/GetData","AdminController@getDataReport");
+    Route::get("/Report/GetDataBaju","AdminController@getDataReportBaju");
+    //End Function Laporan
+
+    //Function Feedback
+    Route::view("/Feedback","admin.listFeedback");
 });
 });
 
@@ -139,5 +160,6 @@ Route::get("/logAuthAdmin","AdminController@logAdmin");
 //Verifikasi without middleware
 Route::view("/verifikasi","verifikasi");
 Route::post("/verifikasiData","MainController@verifikasi");
+Route::get("/VerifByEmail/{id}/{kode}","MainController@VerifikasiByEmail");
 
 Route::view("/getTimeStamp","admin.testChart");

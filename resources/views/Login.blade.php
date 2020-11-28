@@ -67,4 +67,24 @@ Log In
       })
   </script>
   @endif
+  @if (Session("verifyGagal"))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title:'Verify Gagal',
+            text: 'Silahkan Cek Kode verikasi dan melakukan verifikasi manual dengan cara login terlebih dahulu'
+        })
+    </script>
+  @endif
+
+  @if (Session("verifySucces"))
+    <script>
+        Swal.fire({
+          icon: 'success',
+          title: 'Email Berhasil Di Verifikasi Silahkan melakukan login',
+          showConfirmButton: false,
+          timer: 1500
+      })
+    </script>
+  @endif
 @endsection
