@@ -43,9 +43,8 @@ History
                             <td class="bg-info text-white">Order Sent</td>
                         @endif
                         <td>
-                            <form action="/getDataDetail" method="POST" style="display: inline-block">
-                                @csrf
-                                <button class='btn btn-success' name="detailTrans" value='{{$item->id_hjual}}'>Show Detail</button>
+                            <form action="/DetailTransaksi/{{$item->id_hjual}}" style="display: inline-block">
+                                <button class='btn btn-success'>Show Detail</button>
                             </form>
                             @if ($item->status == "3")
                             <button class='btn btn-info uploadNew' value="{{$item->id_hjual}}">Upload Bukti Transfer Baru</button>

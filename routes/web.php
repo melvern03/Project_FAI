@@ -48,8 +48,7 @@ Route::middleware(["CheckAdmin"])->group(function(){
 
         Route::middleware(["CheckLogin"])->group(function(){
             //Detail Transaksi
-            Route::post("/getDataDetail","userController@getDataDetail");
-            Route::view("/DetailTransaksi","detailTransaksi");
+            Route::get("/DetailTransaksi/{id}","userController@getDataDetail");
             //End Detail
 
             //Review

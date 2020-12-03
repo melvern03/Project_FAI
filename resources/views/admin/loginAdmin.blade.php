@@ -57,4 +57,23 @@ Swal.fire({
 })
 </script>
 @endif
+@if (Session("errors"))
+<script>
+    Swal.fire({
+  icon: 'error',
+  title: 'Login Fail',
+  text: 'Username / Password Salah',
+})
+</script>
+@endif
+@if (Session("NotAdmin"))
+<script>
+    Swal.fire({
+  icon: 'error',
+  title: 'Login Fail',
+  text: 'Anda tidak mempunyai akses untuk halaman ini',
+})
+</script>
+@endif
+
 @endsection

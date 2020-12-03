@@ -159,6 +159,34 @@
             </a>
           </div>
         </div>
+        <br>
+        <div style="width: 80%;margin:auto">
+        <table class='table display' id='tableReview'>
+            <thead>
+                <td>Rating</td>
+                <td>Review By</td>
+                <td>Variant</td>
+                <td>Review</td>
+            </thead>
+            <tbody>
+                @foreach (Review::orderBy('id','desc')->where('id_user',"!=",Auth::user()->id_user)->where('id_hbaju',$Hbaju[0]->ID_HBAJU)->take(10)->get() as $key => $item)
+                <tr>
+                    <td><img src="{{url('/AssetReview/star'.$item->rating.'.png')}}" style="width: 80%"><p style="display: none">{{$item->rating}}</p></td>
+                    <td>{{Users::where('id_user',$item->id_user)->value('nama_user')}}</td>
+                    <td>{{DB::table('d_baju')->where('id_dbaju',$item->id_baju)->value("NAMA_BAJU")}}</td>
+                    <td>{{$item->pesan}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        </div>
+        <script>
+            $(document).ready(function(){
+            $("#tableReview").DataTable({
+                searching:false
+            })
+        })
+        </script>
     @endif
     @else
     <h3>Reviews</h3>
@@ -186,6 +214,34 @@
         </a>
       </div>
     </div>
+    <br>
+    <div style="width: 80%;margin:auto">
+        <table class='table-striped display' id='tableReviewAll'>
+            <thead>
+                <td>Rating</td>
+                <td>Review By</td>
+                <td>Variant</td>
+                <td>Review</td>
+            </thead>
+            <tbody>
+                @foreach (Review::orderBy('id','desc')->where('status_pesan','1')->where('id_hbaju',$Hbaju[0]->ID_HBAJU)->get() as $key => $item)
+                    <tr>
+                        <td><img src="{{url('/AssetReview/star'.$item->rating.'.png')}}" style="width: 80%"><p style="display: none">{{$item->rating}}</p></td>
+                        <td>{{Users::where('id_user',$item->id_user)->value('nama_user')}}</td>
+                        <td>{{DB::table('d_baju')->where('id_dbaju',$item->id_baju)->value("NAMA_BAJU")}}</td>
+                        <td>{{$item->pesan}}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $("#tableReviewAll").DataTable({
+                searching:false
+            })
+        })
+    </script>
     @endif
 
 

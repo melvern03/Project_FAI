@@ -37,7 +37,7 @@ class cartcontroler extends Controller
             $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through smtp.gmail.com:587 => port
             $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
             $mail->Username   = 'cassy.onlineshopistts@gmail.com';                     // SMTP username
-            $mail->Password   = 'onlineshop123';                               // SMTP password
+            $mail->Password   = 'onlineshop2020';                               // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 

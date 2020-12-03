@@ -42,7 +42,7 @@ class AdminController extends Controller
                     return \redirect("/admin/home")->with("success", "Selamat Datang!");
                 }else{
                     Auth::logout();
-                    return redirect("/");
+                    return redirect("/admin")->with("NotAdmin","kamu bukan admin");
                 }
             }else if(Auth::user()->status=="Disabled"){
                 Auth::logout();
@@ -110,7 +110,7 @@ class AdminController extends Controller
         $validate = $req->validate(
             [
                 "gambarModel"=>"mimetypes:image/jpeg,image/png",
-                "namaModel"=>"required",
+                "NamaModel"=>"required",
                 "Harga"=>"required"
             ],
             [
@@ -488,7 +488,7 @@ class AdminController extends Controller
             $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through smtp.gmail.com:587 => port
             $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
             $mail->Username   = 'cassy.onlineshopistts@gmail.com';                     // SMTP username
-            $mail->Password   = 'onlineshop123';                               // SMTP password
+            $mail->Password   = 'onlineshop2020';                               // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
@@ -516,7 +516,7 @@ class AdminController extends Controller
             $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through smtp.gmail.com:587 => port
             $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
             $mail->Username   = 'cassy.onlineshopistts@gmail.com';                     // SMTP username
-            $mail->Password   = 'onlineshop123';                               // SMTP password
+            $mail->Password   = 'onlineshop2020';                               // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port       = 465;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 

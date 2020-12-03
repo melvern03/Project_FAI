@@ -254,9 +254,9 @@ class userController extends Controller
         return redirect("/History")->with('reviewDone',"terimakasih");
     }
 
-    public function getDataDetail(Request $req){
-        $data = d_jual::where('id_hjual',$req->detailTrans)->get();
-        return redirect("/DetailTransaksi")->with("dataDetail",$data);
+    public function getDataDetail($id){
+        $data["trans"] = d_jual::where('id_hjual',$id)->get();
+        return view("detailTransaksi")->with("data",$data);
     }
 
     public function AddFeedback(Request $req){

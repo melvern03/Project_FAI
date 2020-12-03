@@ -41,7 +41,6 @@ Log In
               <br>
               <hr>
               Havent had an account? <a href="/register">click here for Register.</a><br>
-              {{-- <a href="">Forget Password</a> --}}
             <br>
             </div>
           </main>
@@ -86,5 +85,13 @@ Log In
           timer: 1500
       })
     </script>
+  @endif
+  @if (Session("error"))
+  <script>
+    Swal.fire({
+        icon: 'error',
+        text: 'Username / Password Salah'
+    })
+  </script>
   @endif
 @endsection

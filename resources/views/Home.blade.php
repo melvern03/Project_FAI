@@ -88,7 +88,7 @@
     </div>
     <br><br><br>
     {{-- ================================================================================================================================= --}}
-    <div class="row" tyle="height: 100px;">
+    <div class="row" style="height: 100%;margin:0%">
         <div class="col-6 mh-100" style="background-image: url('Promo/Layout1.jpg');background-size:100%;text-align: center;width: 100px; height: 760px;">
             <h1 class="display-3 align-bottom" style="color: white">Men</h1>
         </div>
@@ -110,6 +110,7 @@
 <script>
     let timerInterval
 Swal.fire({
+    icon:'success',
   title: 'Login Success',
   html: 'Welcome {!! Auth::User()->nama_user !!}',
   timer: 1500,
