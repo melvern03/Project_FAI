@@ -29,7 +29,7 @@
                 <td>{{Users::where('id_user',$item->id_user)->value('nama_user')}}</td>
                 <td>{{"Rp. ".number_format($item->grand_total)}}</td>
                 <td>{{$item->tgl_jual}}</td>
-                <td><button class="btn btn-success showDetail" value='{{$item->id_hjual}}' ongkir='{{$item->grand_total - d_jual::where('id_hjual',$item->id_hjual)->sum('subtotal')}}'>Show Detail</button></td>
+                <td><button class="btn btn-success showDetail" value='{{$item->id_hjual}}' ongkir='{{$item->grand_total - d_jual::where('id_hjual',$item->id_hjual)->sum('subtotal') + $item->diskon}}'>Show Detail</button></td>
             </tr>
         @endforeach
     </tbody>
@@ -73,6 +73,7 @@
                     grand = parseInt(grand)+parseInt(obj.subtotal);
                     diskon = obj.diskon;
                 }
+                grand = grand - diskon;
                 dom+=`</tbody></table>
                 <h3 style='margin-right:10%'>Sub Total : Rp. `+new Intl.NumberFormat('ID').format(grand-ongkir)+`</h3>
                 <h3 style='margin-right:10%'>Biaya Ongkir : Rp. `+new Intl.NumberFormat('ID').format(ongkir)+`</h3>

@@ -230,12 +230,13 @@ class userController extends Controller
 
         h_transaksi::where("id_hjual",$req->id)->update(["status"=>"2"]);
         foreach (d_jual::where('id_hjual',$req->id)->get() as $item) {
+            $idBaju =  DB::table('d_baju')->where('NAMA_BAJU',$item->nama_barang)->value('id_dbaju');
             $newReview = new Review();
             $newReview->id_user = Auth::user()->id_user;
             $newReview->id_order = $req->id;
-            $newReview->id_baju = $item->id_barang;
+            $newReview->id_baju = $idBaju;
             $newReview->status_pesan = "0";
-            $newReview->id_hbaju = DB::table('d_baju')->where('id_dbaju',$item->id_barang)->value('ID_HBAJU');
+            $newReview->id_hbaju = DB::table('d_baju')->where('id_dbaju',$idBaju)->value('ID_HBAJU');
             $newReview->save();
         }
 

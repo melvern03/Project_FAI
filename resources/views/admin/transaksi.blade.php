@@ -40,7 +40,7 @@
                         <td class="bg-info text-white">Order Sent To Customer</td>
                     @endif
                     <td align="center">
-                        <button class="btn btn-success showDetail" value='{{$item->id_hjual}}' ongkir='{{$item->grand_total - d_jual::where('id_hjual',$item->id_hjual)->sum('subtotal')}}'>Show Detail</button>
+                        <button class="btn btn-success showDetail" value='{{$item->id_hjual}}' ongkir='{{$item->grand_total - d_jual::where('id_hjual',$item->id_hjual)->sum('subtotal') + $item->diskon}}' diskon='{{$item->diskon}}'>Show Detail</button>
                         @if ($item->status == "0")
                             <button class="btn btn-info showBukti" value="{{url($item->gambar)}}">Bukti Transfer</button>
                             <button class='btn btn-primary processOrder' value='{{$item->id_hjual}}'>Process Order</button>
@@ -157,10 +157,12 @@
 
         $(document).on('click',".showDetail",function(e){
             var ongkir = $(this).attr('ongkir');
+            var diskon = $(this).attr('diskon');
             var id = $(this).val();
             $.get('{{ url("admin/ListTransaksi/getDetail") }}',{id : id}, function(response) {
                 var hasil = JSON.parse(response);
                 var grand = ongkir;
+                var sub = 0;
                 var dom=` <h2>Detail Order</h2>
                 <button class="btn btn-primary" id='backToMainTrans'>Back</button>
                 <h3></h3>
@@ -183,9 +185,13 @@
                     </tr>
                     `;
                     grand = parseInt(grand)+parseInt(obj.subtotal);
+                    sub = sub + obj.subtotal;
                 }
+                grand = grand - diskon;
                 dom+=`</tbody></table>
+                <h3 style='margin-right:10%'>Sub Total : Rp. `+new Intl.NumberFormat('ID').format(sub)+`</h3>
                 <h3 style='margin-right:10%'>Biaya Ongkir : Rp. `+new Intl.NumberFormat('ID').format(ongkir)+`</h3>
+                <h3 style='margin-right:10%'>Discount : Rp. `+new Intl.NumberFormat('ID').format(diskon)+`</h3>
                 <h3 style='margin-right:10%'>Grand Total : Rp. `+new Intl.NumberFormat('ID').format(grand)+`</h3>`;
                 $("#detailOrder").html(dom);
                 $("#detailOrder").show();

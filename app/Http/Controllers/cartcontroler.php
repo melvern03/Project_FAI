@@ -139,7 +139,7 @@ class cartcontroler extends Controller
         if($promo != null){
             if(array_key_exists(Auth::user()->nama_user,$promo)){
                 if($promo[Auth::user()->nama_user] != "No Promo"){
-                    $diskon = $subtotal*DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("diskon_promo")/100;
+                    $diskon = $total*DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("diskon_promo")/100;
                     if($diskon > DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon")){
                         $diskon = DB::table("promo")->where('id_promo',$promo[Auth::user()->nama_user])->value("maximal_diskon");
                     }
@@ -244,11 +244,13 @@ class cartcontroler extends Controller
             $totalsemua = $subtotal+15000;
             $kurir = 15000;
         }
+        $totalsemua = $totalsemua - $diskon;
         $body = $body."
         </table>
         <br>
         <h4>Sub Total :Rp. ".number_format($subtotal,0,',','.')."</h4>
-        <h4>biaya kirim :Rp. ".number_format($kurir,0,',','.')."</h4>
+        <h4>biaya Ongkir :Rp. ".number_format($kurir,0,',','.')."</h4>
+        <h4>Discount :Rp. ".number_format($diskon,0,',','.')."</h4>
         <h2>Grand Total :Rp. ".number_format($totalsemua,0,',','.')."</h2>
         <hr>
         <br>

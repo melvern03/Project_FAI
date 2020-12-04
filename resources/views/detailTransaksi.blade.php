@@ -29,14 +29,14 @@ Detail Transaksi
                     <td>{{$item->qty}}</td>
                     <td>{{"Rp. ".number_format($item->subtotal,0,',','.')}}</td>
                     @php
-                        $subtotal += $item->subtotal * $item->qty;
+                        $subtotal = $subtotal + $item->subtotal;
                     @endphp
                 </tr>
             @endforeach
         </tbody>
     </table>
     <h4>Sub Total : {{"Rp. ".number_format($subtotal,0,',','.')}}</h4>
-    <h4>Biaya Ongkir : {{"Rp. " . number_format(DB::table('h_jual')->where('id_hjual',$item->id_hjual)->value('grand_total') - DB::table('d_jual')->where("id_hjual",$item->id_hjual)->sum('subtotal'),0,',','.')}}</h3>
+    <h4>Biaya Ongkir : {{"Rp. " . number_format(DB::table('h_jual')->where('id_hjual',$item->id_hjual)->value('grand_total')+DB::table('h_jual')->where('id_hjual',$item->id_hjual)->value('diskon') - $subtotal)}}</h3>
     <h4>Discount : {{"Rp. ".number_format(DB::table('h_jual')->where('id_hjual',$item->id_hjual)->value('diskon'),0,',','.')}}</h4>
     <h3>Grand Total : {{"Rp. ".number_format(DB::table('h_jual')->where('id_hjual',$item->id_hjual)->value('grand_total'),0,',','.')}}</h4>
 </div>
